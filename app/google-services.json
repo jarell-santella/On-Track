@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "959972107992",
+    "project_id": "on-track-68a13",
+    "storage_bucket": "on-track-68a13.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:959972107992:android:e16c9f0cc0b4f44bdb99ad",
+        "android_client_info": {
+          "package_name": "com.android.on_track"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "959972107992-mbdosd4ts6d8cccjukv3ep0lk2srka82.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAI9muqSXL6XyF3VQ0XKiWOYCvbFvscSN8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "959972107992-mbdosd4ts6d8cccjukv3ep0lk2srka82.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
