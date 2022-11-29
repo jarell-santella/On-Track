@@ -3,6 +3,7 @@ package com.android.on_track.ui.geofence
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,6 +70,8 @@ class GeofenceFragment : Fragment() {
 
         myListView.setOnItemClickListener { parent, _, pos, _ ->
             Toast.makeText(requireActivity(), "Clicked on pos: $pos", Toast.LENGTH_LONG).show()
+
+            Log.d("DEBUG: ", "I got clicked at $pos")
 //            val entry = parent.getItemAtPosition(pos) as GeofenceEntry
 //            val intent: Intent
 //

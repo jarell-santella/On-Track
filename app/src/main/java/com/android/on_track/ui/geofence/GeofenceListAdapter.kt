@@ -31,10 +31,10 @@ class GeofenceListAdapter(private val context: Context, private var geofenceList
         val isEnabled = geofenceList[pos].isEnabled
 
         val name = view.findViewById(R.id.textView_locationName) as TextView
-        val switch = view.findViewById(R.id.switch_enable) as Switch
+//        val switch = view.findViewById(R.id.switch_enable) as Switch
 
         name.text = locationStr
-        switch.isChecked = isEnabled
+//        switch.isChecked = isEnabled
 
         return view
     }
