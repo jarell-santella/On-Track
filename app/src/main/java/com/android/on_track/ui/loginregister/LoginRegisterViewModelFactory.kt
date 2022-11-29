@@ -1,9 +1,8 @@
-package com.android.on_track
+package com.android.on_track.ui.loginregister
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.android.on_track.data.FirebaseUserDataRepository
-import com.android.on_track.ui.LoginRegisterViewModel
 
 class LoginRegisterViewModelFactory(private val repository: FirebaseUserDataRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
