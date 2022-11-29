@@ -1,8 +1,10 @@
 package com.android.on_track.geofenceDB
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import com.android.on_track.R
 import com.android.on_track.Util
@@ -15,7 +17,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlin.properties.Delegates
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
@@ -43,6 +44,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         latLng = Util.stringToLatLng(intent.getStringExtra(GeofenceFragment.KEY_LAT_LNG)!!)
 
         Toast.makeText(this, "isNew: $isNew, name: $name, radius: $radius latLng: $latLng", Toast.LENGTH_LONG).show()
+
+        if(!isNew)
+            findViewById<TextView>(R.id.location_title).text = name
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -63,6 +67,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun clickedCancel(view: View) {
+        finish()
+    }
+
+    fun deleteEntry(view: View) {
+        val returnIntent = Intent()
+        returnIntent.putExtra(GeofenceFragment.KEY_LIST_INDEX, intent.getIntExtra(GeofenceFragment.KEY_LIST_INDEX, -1))
+        setResult(RESULT_OK, returnIntent)
         finish()
     }
 }

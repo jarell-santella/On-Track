@@ -3,6 +3,7 @@ package com.android.on_track.ui.geofence
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import java.util.ArrayList
 
 class GeofenceFragment : Fragment() {
     companion object{
+        const val KEY_LIST_INDEX = "list_index"
         const val KEY_IS_NEW = "type"
         const val KEY_NAME = "name"
         const val KEY_LAT_LNG = "latLng"
@@ -79,28 +81,26 @@ class GeofenceFragment : Fragment() {
 
         myListView.setOnItemClickListener { parent, _, pos, _ ->
             val entry = parent.getItemAtPosition(pos) as GeofenceEntry
-//            Toast.makeText(requireActivity(), "Clicked on pos: $pos, at location: ${entry.location}", Toast.LENGTH_SHORT).show()
 
-//            val intent = Intent(requireActivity(), MapActivity::class.java)
-//            result.launch(intent)
-
-            startActivity(Intent(requireActivity(), MapActivity::class.java).apply {
+            val intent = Intent(requireActivity(), MapActivity::class.java).apply {
+                putExtra(KEY_LIST_INDEX, pos)
                 putExtra(KEY_IS_NEW, false)
                 putExtra(KEY_NAME, entry.entry_name)
                 putExtra(KEY_LAT_LNG, Util.latLngToString(entry.location!!))
                 putExtra(KEY_RADIUS, entry.geofence_radius)
-            })
+            }
+
+            result.launch(intent)
         }
 
-//        result = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-//            if(result.resultCode == Activity.RESULT_OK ) {
-////                val index = result.data?.getIntExtra("return_index", -1) as Int
-////                if (index > -1) {
-////                    historyViewModel.deletePosition(index)
-////                }
-//                Toast.makeText(requireActivity(), "RESULT_OK", Toast.LENGTH_SHORT).show()
-//            }
-//        }
+        result = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if(result.resultCode == Activity.RESULT_OK ) {
+                val index = result.data?.getIntExtra(KEY_LIST_INDEX, -1) as Int
+                if (index > -1) {
+                    historyViewModel.deletePosition(index)
+                }
+            }
+        }
 
         addButton.setOnClickListener {
             val geofenceEntry = GeofenceEntry()
