@@ -3,4 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_geofence">Geofence</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -3,7 +3,6 @@ package com.android.on_track.ui.geofence
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +10,8 @@ import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.android.on_track.R
@@ -39,6 +38,8 @@ class GeofenceFragment : Fragment() {
     private lateinit var repository: GeofenceRepository
     private lateinit var viewModelFactory: GeofenceViewModelFactory
     private lateinit var historyViewModel: GeofenceViewModel
+
+    private lateinit var result: ActivityResultLauncher<Intent>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentGeofenceBinding.inflate(inflater, container, false)
@@ -71,25 +72,22 @@ class GeofenceFragment : Fragment() {
         myListView.setOnItemClickListener { parent, _, pos, _ ->
             val entry = parent.getItemAtPosition(pos) as GeofenceEntry
             Toast.makeText(requireActivity(), "Clicked on pos: $pos, at location: ${entry.location}", Toast.LENGTH_SHORT).show()
-//            val intent: Intent
-//
-//            when (entry.inputType) {
-//                0 -> {
-//                }
-//                1 -> {
-//                }
-//                else -> intent = Intent(requireActivity(), HistoryEntryActivity::class.java)
-//            }
-//
+
+//            val intent = Intent(requireActivity(), MapActivity::class.java)
 //            result.launch(intent)
+
+            startActivity(Intent(requireActivity(), MapActivity::class.java).apply {
+                putExtra("type", "old")
+            })
         }
 
 //        result = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
 //            if(result.resultCode == Activity.RESULT_OK ) {
-//                val index = result.data?.getIntExtra("return_index", -1) as Int
-//                if (index > -1) {
-//                    historyViewModel.deletePosition(index)
-//                }
+////                val index = result.data?.getIntExtra("return_index", -1) as Int
+////                if (index > -1) {
+////                    historyViewModel.deletePosition(index)
+////                }
+//                Toast.makeText(requireActivity(), "RESULT_OK", Toast.LENGTH_SHORT).show()
 //            }
 //        }
 
