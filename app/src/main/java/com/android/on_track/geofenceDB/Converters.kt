@@ -1,9 +1,7 @@
-package com.android.on_track.geofence
+package com.android.on_track.geofenceDB
 
 import androidx.room.TypeConverter
 import com.google.android.gms.maps.model.LatLng
-import java.text.SimpleDateFormat
-import java.util.*
 
 class Converters{
     @TypeConverter

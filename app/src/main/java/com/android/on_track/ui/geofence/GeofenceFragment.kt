@@ -1,4 +1,4 @@
-package com.android.on_track.ui.notifications
+package com.android.on_track.ui.geofence
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,14 +7,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.android.on_track.databinding.FragmentNotificationsBinding
+import com.android.on_track.databinding.FragmentGeofenceBinding
 
-class NotificationsFragment : Fragment() {
+class GeofenceFragment : Fragment() {
 
-    private var _binding: FragmentNotificationsBinding? = null
+    private var _binding: FragmentGeofenceBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -22,14 +21,14 @@ class NotificationsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel =
-            ViewModelProvider(this).get(NotificationsViewModel::class.java)
+        val geofenceViewModel =
+            ViewModelProvider(this).get(GeofenceViewModel::class.java)
 
-        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+        _binding = FragmentGeofenceBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textNotifications
-        notificationsViewModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.textGeofence
+        geofenceViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

@@ -1,4 +1,4 @@
-package com.android.on_track.geofence
+package com.android.on_track.geofenceDB
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
