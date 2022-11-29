@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="login_register_tabs">
+        <item>Login</item>
+        <item>Register</item>
+    </string-array>
+    <string-array name="account_types">
+        <item>Parent</item>
+        <item>Child</item>
+    </string-array>
+</resources>

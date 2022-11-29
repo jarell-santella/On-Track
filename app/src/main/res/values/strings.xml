@@ -1,6 +1,17 @@
 <resources>
-    <string name="app_name">On-Track</string>
+    <string name="app_name">On Track</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <!-- For login and registration -->
+    <string name="first_name_hint">First Name</string>
+    <string name="last_name_hint">Last Name</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="account_type_hint">Account Type</string>
+    <string name="guest_login_button">Guest Login</string>
+    <string name="login_button">Login</string>
+    <string name="register_button">Create Account</string>
+    <string name="sign_out_button">Sign Out</string>
 </resources>
