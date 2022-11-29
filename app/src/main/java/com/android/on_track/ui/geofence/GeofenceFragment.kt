@@ -69,10 +69,8 @@ class GeofenceFragment : Fragment() {
         }
 
         myListView.setOnItemClickListener { parent, _, pos, _ ->
-            Toast.makeText(requireActivity(), "Clicked on pos: $pos", Toast.LENGTH_LONG).show()
-
-            Log.d("DEBUG: ", "I got clicked at $pos")
-//            val entry = parent.getItemAtPosition(pos) as GeofenceEntry
+            val entry = parent.getItemAtPosition(pos) as GeofenceEntry
+            Toast.makeText(requireActivity(), "Clicked on pos: $pos, at location: ${entry.location}", Toast.LENGTH_SHORT).show()
 //            val intent: Intent
 //
 //            when (entry.inputType) {
@@ -99,7 +97,7 @@ class GeofenceFragment : Fragment() {
             val geofenceEntry = GeofenceEntry()
 
             geofenceEntry.entry_name = "Science World"
-            geofenceEntry.location = LatLng(49.2734, -123.1038)
+            geofenceEntry.location = LatLng(69.2734, -123.1038)
             geofenceEntry.geofence_radius = 10.0
 
             historyViewModel.insert(geofenceEntry)
