@@ -15,12 +15,20 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.android.on_track.R
+import com.android.on_track.Util
 import com.android.on_track.databinding.FragmentGeofenceBinding
 import com.android.on_track.geofenceDB.*
 import com.google.android.gms.maps.model.LatLng
 import java.util.ArrayList
 
 class GeofenceFragment : Fragment() {
+    companion object{
+        const val KEY_IS_NEW = "type"
+        const val KEY_NAME = "name"
+        const val KEY_LAT_LNG = "latLng"
+        const val KEY_RADIUS = "radius"
+    }
+
     private var _binding: FragmentGeofenceBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -71,13 +79,16 @@ class GeofenceFragment : Fragment() {
 
         myListView.setOnItemClickListener { parent, _, pos, _ ->
             val entry = parent.getItemAtPosition(pos) as GeofenceEntry
-            Toast.makeText(requireActivity(), "Clicked on pos: $pos, at location: ${entry.location}", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(requireActivity(), "Clicked on pos: $pos, at location: ${entry.location}", Toast.LENGTH_SHORT).show()
 
 //            val intent = Intent(requireActivity(), MapActivity::class.java)
 //            result.launch(intent)
 
             startActivity(Intent(requireActivity(), MapActivity::class.java).apply {
-                putExtra("type", "old")
+                putExtra(KEY_IS_NEW, false)
+                putExtra(KEY_NAME, entry.entry_name)
+                putExtra(KEY_LAT_LNG, Util.latLngToString(entry.location!!))
+                putExtra(KEY_RADIUS, entry.geofence_radius)
             })
         }
 
@@ -95,7 +106,7 @@ class GeofenceFragment : Fragment() {
             val geofenceEntry = GeofenceEntry()
 
             geofenceEntry.entry_name = "Science World"
-            geofenceEntry.location = LatLng(69.2734, -123.1038)
+            geofenceEntry.location = LatLng(49.2734, -123.1038)
             geofenceEntry.geofence_radius = 10.0
 
             historyViewModel.insert(geofenceEntry)
