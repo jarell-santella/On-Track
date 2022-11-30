@@ -1,4 +1,4 @@
-package com.android.on_track.ui
+package com.android.on_track.ui.loginregister
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
