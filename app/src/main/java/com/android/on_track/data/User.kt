@@ -1,7 +1,8 @@
 package com.android.on_track.data
 
 data class User(
-    val isAnonymous: Boolean,
+    @field:JvmField
+    val isAnonymous: Boolean? = null,
     val firstName: String? = null,
     val lastName: String? = null,
     val email: String? = null,
