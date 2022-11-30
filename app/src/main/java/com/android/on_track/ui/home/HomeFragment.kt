@@ -1,7 +1,11 @@
 package com.android.on_track.ui.home
 
+import android.app.usage.UsageEvents
+import android.app.usage.UsageStatsManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +23,9 @@ import com.android.on_track.ui.loginregister.MainActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class HomeFragment : Fragment() {
 
@@ -74,6 +81,49 @@ class HomeFragment : Fragment() {
 
         signOutButton.setOnClickListener {
             viewModel.signOut()
+        }
+
+        getUsageStats()
+    }
+
+    private fun getUsageStats() {
+//            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+//            val startTime: Long = GregorianCalendar(2022, 1, 29).timeInMillis
+//            val endTime: Long = GregorianCalendar(2022, 10, 29).timeInMillis
+//
+//            val usageStatsManager = context!!.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+//            val queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, endTime)
+//
+//            for (us in queryUsageStats) {
+//                Log.d("DEBUG: ", us.packageName + " = " + us.totalTimeInForeground/60000.0)
+//            }
+
+        val calendar = Calendar.getInstance()
+        val endTime = calendar.timeInMillis
+        calendar.add(Calendar.DAY_OF_MONTH, -1)
+        val startTime = calendar.timeInMillis
+
+        val dateFormat = SimpleDateFormat("M-d-yyyy HH:mm:ss");
+        Log.d("DEBUG: ", "_____________________________Range start: " + dateFormat.format(startTime))
+        Log.d("DEBUG: ", "_____________________________Range end: " + dateFormat.format(endTime))
+
+        val usageStatsManager = context!!.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        val queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, endTime)
+
+
+
+        for (us in queryUsageStats) {
+            val appTime = us.totalTimeInForeground
+            val seconds = (appTime/1000)%60
+            val minutes = (appTime/(1000*60))%60
+            val hours = (appTime/(1000*60*60))
+
+            if(!(hours == 0L && minutes == 0L && seconds == 0L)){
+                val shortenedAppName = us.packageName
+
+                Log.d("DEBUG: ", "Name: $shortenedAppName, hrs: $hours, mins: $minutes, secs: $seconds")
+            }
+//            Log.d("DEBUG: ", "Name: ${us.packageName}, hrs: $hours, mins: $minutes, secs: $seconds")
         }
     }
 
