@@ -1,25 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/Theme.OnTrack.AppBarOverlay">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"/>
-
-    </com.google.android.material.appbar.AppBarLayout>
+    <!-- TODO: Fix input hint being in the border -->
+    <!-- TODO: Fix inputs going beneath the TabLayout -->
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center"
         android:orientation="vertical">
@@ -30,7 +20,8 @@
             android:gravity="center"
             android:background="@android:color/transparent"
             app:boxBackgroundColor="@android:color/transparent"
-            app:passwordToggleEnabled="false">
+            app:passwordToggleEnabled="false"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/email_input"
@@ -51,7 +42,8 @@
             android:gravity="center"
             android:background="@android:color/transparent"
             app:boxBackgroundColor="@android:color/transparent"
-            app:passwordToggleEnabled="true">
+            app:passwordToggleEnabled="true"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password_input"
@@ -66,7 +58,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
         
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/login_button"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
@@ -75,4 +67,4 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+</ScrollView>

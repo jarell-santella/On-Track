@@ -3,28 +3,27 @@ package com.android.on_track.ui.loginregister
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.android.on_track.R
 import com.android.on_track.data.FirebaseUserData
 import com.android.on_track.data.FirebaseUserDataRepository
 import com.android.on_track.ui.navigation.NavigationActivity
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class LoginFragment : Fragment() {
-    private lateinit var toolbar: Toolbar
-
     private lateinit var viewModel: LoginRegisterViewModel
 
     private lateinit var navigationIntent: Intent
 
     // TODO: It may be better to put everything into onCreateView to get the most recent database instance
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
         val auth = Firebase.auth
         val db = Firebase.firestore
         val userData = FirebaseUserData(auth, db)
@@ -35,7 +34,7 @@ class LoginFragment : Fragment() {
         viewModel.currentUser.observe(this) { user ->
             if (user != null) {
                 navigationIntent = Intent(context, NavigationActivity::class.java)
-                if (user.isAnonymous) {
+                if (user.isAnonymous == true) {
                     // they are using guest account
                     navigationIntent.putExtra("account_type_key", "guest")
                 } else if (user.accountType == "parent") {
@@ -45,7 +44,10 @@ class LoginFragment : Fragment() {
                     // they are using child account
                     navigationIntent.putExtra("account_type_key", "child")
                 }
+                // TODO: We do not need to put the account type key as an extra in the intent
+                //  Kept here in case we need it for the future
                 startActivity(navigationIntent)
+                requireActivity().finish()
             }
         }
     }
@@ -53,12 +55,11 @@ class LoginFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_login, container, false)
 
-        toolbar = view.findViewById(R.id.toolbar)
         setHasOptionsMenu(true)
 
         val emailInput = view.findViewById<TextInputEditText>(R.id.email_input)
         val passwordInput = view.findViewById<TextInputEditText>(R.id.password_input)
-        val loginButton = view.findViewById<Button>(R.id.login_button)
+        val loginButton = view.findViewById<MaterialButton>(R.id.login_button)
 
         loginButton.setOnClickListener {
             val email = emailInput.text.toString()

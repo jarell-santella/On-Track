@@ -32,6 +32,8 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
+        super.onStart()
+
         val auth = Firebase.auth
         val db = Firebase.firestore
         val userData = FirebaseUserData(auth, db)
@@ -42,19 +44,20 @@ class NavigationActivity : AppCompatActivity() {
 
         viewModel.currentUser.observe(this) { user ->
             if (user != null) {
-                if (user.isAnonymous) {
+                if (user.isAnonymous == true) {
                     // they are using guest account
                     textView.text = "Anonymous"
-                } else if (user.accountType == "parent") {
+                } else if (user.accountType == "Parent") {
                     // they are using parent account
                     textView.text = "Parent"
-                } else if (user.accountType == "child") {
+                } else if (user.accountType == "Child") {
                     // they are using child account
                     textView.text = "Child"
                 }
             } else {
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
+                finish()
             }
         }
 

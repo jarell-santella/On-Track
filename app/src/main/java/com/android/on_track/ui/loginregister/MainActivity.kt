@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager2
     private lateinit var tabFragmentStateAdapter: TabFragmentStateAdapter
 
-    private val tabTitles: Array<String> = resources.getStringArray(R.array.login_register_tabs)
+    private lateinit var tabTitles: Array<String>
     private lateinit var tabConfigurationStrategy: TabLayoutMediator.TabConfigurationStrategy
     private lateinit var tabLayoutMediator: TabLayoutMediator
 
@@ -28,12 +28,18 @@ class MainActivity : AppCompatActivity() {
         loginFragment = LoginFragment()
         registerFragment = RegisterFragment()
 
+        fragments = ArrayList()
+
+        fragments.add(loginFragment)
+        fragments.add(registerFragment)
+
         tabLayout = findViewById(R.id.tab_layout)
         viewPager = findViewById(R.id.view_pager)
         tabFragmentStateAdapter = TabFragmentStateAdapter(this, fragments)
         viewPager.adapter = tabFragmentStateAdapter
 
         // TabLayout for Login and Register tabs (fragments)
+        tabTitles = resources.getStringArray(R.array.login_register_tabs)
         tabConfigurationStrategy = TabLayoutMediator.TabConfigurationStrategy() { tab: TabLayout.Tab, position: Int ->
             tab.text = tabTitles[position]
         }
