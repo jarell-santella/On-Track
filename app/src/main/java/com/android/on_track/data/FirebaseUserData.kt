@@ -51,7 +51,6 @@ class FirebaseUserData(private val auth: FirebaseAuth, private val db: FirebaseF
                 if (currentUser != null) {
                     // Create new document with user ID
                     // WARNING: .await() here may cause issues
-                    db.collection("users").add(currentUser.uid).await()
 
                     // Add user object into this document
                     // WARNING: .await() here may cause issues
