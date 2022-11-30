@@ -1,6 +1,5 @@
 package com.android.on_track.ui.home
 
-import android.Manifest
 import android.app.AppOpsManager
 import android.app.AppOpsManager.MODE_ALLOWED
 import android.app.AppOpsManager.OPSTR_GET_USAGE_STATS
@@ -25,7 +24,6 @@ import com.android.on_track.R
 import com.android.on_track.data.FirebaseUserData
 import com.android.on_track.data.FirebaseUserDataRepository
 import com.android.on_track.databinding.FragmentHomeBinding
-import com.android.on_track.ui.geofence.GeofenceListAdapter
 import com.android.on_track.ui.loginregister.LoginRegisterViewModel
 import com.android.on_track.ui.loginregister.LoginRegisterViewModelFactory
 import com.android.on_track.ui.loginregister.MainActivity
@@ -34,7 +32,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class HomeFragment : Fragment() {
@@ -44,6 +41,7 @@ class HomeFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private var m_view: View? = null
 
     // TODO: Do not use LoginRegisterViewModel and LoginRegisterViewModelFactory
     private lateinit var viewModel: LoginRegisterViewModel
@@ -59,6 +57,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        m_view = view
         textView = view.findViewById(R.id.text_home)
         signOutButton = view.findViewById(R.id.sign_out_button)
 
@@ -88,31 +87,31 @@ class HomeFragment : Fragment() {
                 requireActivity().finish()
             }
         }
-
-//        startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
-        getUsageStats(view)
     }
 
-//    override fun onStart() {
-//        super.onStart()
-//
-////        if (getGrantStatus()) {
-//            getUsageStats()
-////        } else {
-////            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
-////        }
-//    }
+    override fun onStart() {
+        super.onStart()
+
+        if (getGrantStatus()) {
+            getUsageStats(m_view!!)
+        } else {
+            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+        }
+    }
 
     private fun getGrantStatus(): Boolean {
-        val appOps = getApplicationContext<Context>().getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-        val mode = appOps.checkOpNoThrow(
-            OPSTR_GET_USAGE_STATS, Process.myUid(), getApplicationContext<Context>().packageName
-        )
-        return if (mode == AppOpsManager.MODE_DEFAULT) {
-            getApplicationContext<Context>()
-                .checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED
-        } else {
+        return try {
+            val packageManager = context!!.packageManager
+            val applicationInfo = packageManager.getApplicationInfo(context!!.packageName, 0)
+            val appOpsManager = context!!.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+            val mode = appOpsManager.checkOpNoThrow(
+                OPSTR_GET_USAGE_STATS,
+                applicationInfo.uid,
+                applicationInfo.packageName
+            )
             mode == MODE_ALLOWED
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
         }
     }
 
@@ -147,7 +146,6 @@ class HomeFragment : Fragment() {
                 list += AppInfo(stat.packageName, stat.totalTimeInForeground)
             }
         }
-//        view.findViewById<TextView>(R.id.app_usage).text = appNameList.toString()
 
         val myListView = view.findViewById<ListView>(R.id.list_usage)
         val arrayAdapter = UsageListAdapter(requireActivity(), list)

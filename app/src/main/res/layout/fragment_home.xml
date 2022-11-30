@@ -28,9 +28,4 @@
         android:id="@+id/list_usage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
-    <TextView
-        android:id="@+id/app_usage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 </LinearLayout>
