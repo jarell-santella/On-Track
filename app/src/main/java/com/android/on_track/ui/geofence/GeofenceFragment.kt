@@ -3,25 +3,32 @@ package com.android.on_track.ui.geofence
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ListView
-import android.widget.Toast
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.android.on_track.R
+import com.android.on_track.Util
+import com.android.on_track.data.geofenceDB.*
 import com.android.on_track.databinding.FragmentGeofenceBinding
-import com.android.on_track.geofenceDB.*
 import com.google.android.gms.maps.model.LatLng
 import java.util.ArrayList
 
 class GeofenceFragment : Fragment() {
+    companion object{
+        const val KEY_LIST_INDEX = "list_index"
+        const val KEY_IS_NEW = "type"
+        const val KEY_NAME = "name"
+        const val KEY_LAT_LNG = "latLng"
+        const val KEY_RADIUS = "radius"
+    }
+
     private var _binding: FragmentGeofenceBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -39,6 +46,8 @@ class GeofenceFragment : Fragment() {
     private lateinit var repository: GeofenceRepository
     private lateinit var viewModelFactory: GeofenceViewModelFactory
     private lateinit var historyViewModel: GeofenceViewModel
+
+    private lateinit var result: ActivityResultLauncher<Intent>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentGeofenceBinding.inflate(inflater, container, false)
@@ -70,35 +79,33 @@ class GeofenceFragment : Fragment() {
 
         myListView.setOnItemClickListener { parent, _, pos, _ ->
             val entry = parent.getItemAtPosition(pos) as GeofenceEntry
-            Toast.makeText(requireActivity(), "Clicked on pos: $pos, at location: ${entry.location}", Toast.LENGTH_SHORT).show()
-//            val intent: Intent
-//
-//            when (entry.inputType) {
-//                0 -> {
-//                }
-//                1 -> {
-//                }
-//                else -> intent = Intent(requireActivity(), HistoryEntryActivity::class.java)
-//            }
-//
-//            result.launch(intent)
+
+            val intent = Intent(requireActivity(), MapActivity::class.java).apply {
+                putExtra(KEY_LIST_INDEX, pos)
+                putExtra(KEY_IS_NEW, false)
+                putExtra(KEY_NAME, entry.entry_name)
+                putExtra(KEY_LAT_LNG, Util.latLngToString(entry.location!!))
+                putExtra(KEY_RADIUS, entry.geofence_radius)
+            }
+
+            result.launch(intent)
         }
 
-//        result = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-//            if(result.resultCode == Activity.RESULT_OK ) {
-//                val index = result.data?.getIntExtra("return_index", -1) as Int
-//                if (index > -1) {
-//                    historyViewModel.deletePosition(index)
-//                }
-//            }
-//        }
+        result = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if(result.resultCode == Activity.RESULT_OK ) {
+                val index = result.data?.getIntExtra(KEY_LIST_INDEX, -1) as Int
+                if (index > -1) {
+                    historyViewModel.deletePosition(index)
+                }
+            }
+        }
 
         addButton.setOnClickListener {
             val geofenceEntry = GeofenceEntry()
 
-            geofenceEntry.entry_name = "Science World"
-            geofenceEntry.location = LatLng(69.2734, -123.1038)
-            geofenceEntry.geofence_radius = 10.0
+            geofenceEntry.entry_name = "Bonsor"
+            geofenceEntry.location = LatLng(49.2238, -122.9938)
+            geofenceEntry.geofence_radius = 50.0
 
             historyViewModel.insert(geofenceEntry)
         }

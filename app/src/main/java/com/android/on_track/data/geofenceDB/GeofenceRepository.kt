@@ -1,4 +1,4 @@
-package com.android.on_track.geofenceDB
+package com.android.on_track.data.geofenceDB
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
