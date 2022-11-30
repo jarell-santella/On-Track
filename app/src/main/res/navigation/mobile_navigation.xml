@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.android.on_track.ui.home.HomeFragment"
+        android:name="com.android.on_track.ui.navigation.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.android.on_track.ui.dashboard.DashboardFragment"
+        android:name="com.android.on_track.ui.navigation.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
 
@@ -22,4 +22,5 @@
         android:name="com.android.on_track.ui.geofence.GeofenceFragment"
         android:label="@string/title_geofence"
         tools:layout="@layout/fragment_geofence" />
+
 </navigation>

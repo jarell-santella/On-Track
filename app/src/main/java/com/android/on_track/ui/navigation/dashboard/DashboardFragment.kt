@@ -1,4 +1,4 @@
-package com.android.on_track.ui.dashboard
+package com.android.on_track.ui.navigation.dashboard
 
 import android.os.Bundle
 import android.view.LayoutInflater

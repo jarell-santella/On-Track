@@ -8,7 +8,6 @@
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
     <string name="set_geofence">Set Geofence</string>
-    <string name="title_notifications">Notifications</string>
     <!-- TODO: Remove or change this placeholder text -->
     <!-- For login and registration -->
     <string name="first_name_hint">First Name</string>
