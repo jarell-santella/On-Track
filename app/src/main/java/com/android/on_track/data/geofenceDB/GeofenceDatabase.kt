@@ -1,4 +1,4 @@
-package com.android.on_track.geofenceDB
+package com.android.on_track.data.geofenceDB
 
 import android.content.Context
 import androidx.room.Database
@@ -15,7 +15,7 @@ abstract class GeofenceDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: GeofenceDatabase? = null
 
-        fun getInstance(context: Context) : GeofenceDatabase{
+        fun getInstance(context: Context) : GeofenceDatabase {
             synchronized(this){
                 var instance = INSTANCE
                 if(instance == null){

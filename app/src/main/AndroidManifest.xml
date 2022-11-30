@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -22,7 +21,7 @@
             android:value="AIzaSyCSpkOAKuW9qHLdgdTGEBYr55eN-ITLaM4" />
 
         <activity
-            android:name=".geofenceDB.MapActivity"
+            android:name=".ui.geofence.MapActivity"
             android:exported="false"
             android:theme="@style/Theme.OnTrack.NoActionBar" />
         <activity

@@ -1,4 +1,4 @@
-package com.android.on_track.geofenceDB
+package com.android.on_track.data.geofenceDB
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -5,10 +5,9 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.Switch
 import android.widget.TextView
 import com.android.on_track.R
-import com.android.on_track.geofenceDB.GeofenceEntry
+import com.android.on_track.data.geofenceDB.GeofenceEntry
 
 class GeofenceListAdapter(private val context: Context, private var geofenceList: List<GeofenceEntry>) : BaseAdapter(){
     override fun getItem(position: Int): Any {

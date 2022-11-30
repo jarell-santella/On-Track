@@ -10,13 +10,13 @@ import com.google.android.gms.maps.model.LatLng
 
 object Util {
     fun checkPermissions(activity: Activity?) {
-        if (Build.VERSION.SDK_INT < 23) return
+        if (Build.VERSION.SDK_INT < 26) return
         if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
             != PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) !=
-            PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) !=
             PackageManager.PERMISSION_GRANTED
+//            || ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) !=
+//            PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 activity,

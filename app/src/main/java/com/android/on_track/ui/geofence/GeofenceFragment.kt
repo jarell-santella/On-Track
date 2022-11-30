@@ -3,13 +3,11 @@ package com.android.on_track.ui.geofence
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ListView
-import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,8 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.android.on_track.R
 import com.android.on_track.Util
+import com.android.on_track.data.geofenceDB.*
 import com.android.on_track.databinding.FragmentGeofenceBinding
-import com.android.on_track.geofenceDB.*
 import com.google.android.gms.maps.model.LatLng
 import java.util.ArrayList
 
@@ -105,9 +103,9 @@ class GeofenceFragment : Fragment() {
         addButton.setOnClickListener {
             val geofenceEntry = GeofenceEntry()
 
-            geofenceEntry.entry_name = "Science World"
-            geofenceEntry.location = LatLng(49.2734, -123.1038)
-            geofenceEntry.geofence_radius = 10.0
+            geofenceEntry.entry_name = "Bonsor"
+            geofenceEntry.location = LatLng(49.2238, -122.9938)
+            geofenceEntry.geofence_radius = 50.0
 
             historyViewModel.insert(geofenceEntry)
         }
