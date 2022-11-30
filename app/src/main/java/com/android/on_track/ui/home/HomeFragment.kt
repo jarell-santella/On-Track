@@ -1,10 +1,16 @@
 package com.android.on_track.ui.home
 
-import android.app.usage.UsageEvents
+import android.Manifest
+import android.app.AppOpsManager
+import android.app.AppOpsManager.MODE_ALLOWED
+import android.app.AppOpsManager.OPSTR_GET_USAGE_STATS
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Process
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +19,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.android.on_track.R
 import com.android.on_track.data.FirebaseUserData
 import com.android.on_track.data.FirebaseUserDataRepository
@@ -78,29 +85,35 @@ class HomeFragment : Fragment() {
                 requireActivity().finish()
             }
         }
+    }
 
-        signOutButton.setOnClickListener {
-            viewModel.signOut()
+    override fun onStart() {
+        super.onStart()
+
+//        if (getGrantStatus()) {
+            getUsageStats()
+//        } else {
+//            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+//        }
+    }
+
+    private fun getGrantStatus(): Boolean {
+        val appOps = getApplicationContext<Context>().getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+        val mode = appOps.checkOpNoThrow(
+            OPSTR_GET_USAGE_STATS, Process.myUid(), getApplicationContext<Context>().packageName
+        )
+        return if (mode == AppOpsManager.MODE_DEFAULT) {
+            getApplicationContext<Context>()
+                .checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED
+        } else {
+            mode == MODE_ALLOWED
         }
-
-        getUsageStats()
     }
 
     private fun getUsageStats() {
-//            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
-//            val startTime: Long = GregorianCalendar(2022, 1, 29).timeInMillis
-//            val endTime: Long = GregorianCalendar(2022, 10, 29).timeInMillis
-//
-//            val usageStatsManager = context!!.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-//            val queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, endTime)
-//
-//            for (us in queryUsageStats) {
-//                Log.d("DEBUG: ", us.packageName + " = " + us.totalTimeInForeground/60000.0)
-//            }
-
         val calendar = Calendar.getInstance()
         val endTime = calendar.timeInMillis
-        calendar.add(Calendar.DAY_OF_MONTH, -1)
+        calendar.add(Calendar.MONTH, -1)
         val startTime = calendar.timeInMillis
 
         val dateFormat = SimpleDateFormat("M-d-yyyy HH:mm:ss");
@@ -111,7 +124,6 @@ class HomeFragment : Fragment() {
         val queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, endTime)
 
 
-
         for (us in queryUsageStats) {
             val appTime = us.totalTimeInForeground
             val seconds = (appTime/1000)%60
@@ -119,11 +131,14 @@ class HomeFragment : Fragment() {
             val hours = (appTime/(1000*60*60))
 
             if(!(hours == 0L && minutes == 0L && seconds == 0L)){
-                val shortenedAppName = us.packageName
+                var shortenedAppName = us.packageName
+
+//                if(shortenedAppName.contains("com.google.android."))
+//                    shortenedAppName = shortenedAppName.substring(19)
 
                 Log.d("DEBUG: ", "Name: $shortenedAppName, hrs: $hours, mins: $minutes, secs: $seconds")
             }
-//            Log.d("DEBUG: ", "Name: ${us.packageName}, hrs: $hours, mins: $minutes, secs: $seconds")
+            Log.d("DEBUG: ", "Name: ${us.packageName}, hrs: $hours, mins: $minutes, secs: $seconds")
         }
     }
 
