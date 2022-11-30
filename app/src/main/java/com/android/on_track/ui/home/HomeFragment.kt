@@ -16,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +25,7 @@ import com.android.on_track.R
 import com.android.on_track.data.FirebaseUserData
 import com.android.on_track.data.FirebaseUserDataRepository
 import com.android.on_track.databinding.FragmentHomeBinding
+import com.android.on_track.ui.geofence.GeofenceListAdapter
 import com.android.on_track.ui.loginregister.LoginRegisterViewModel
 import com.android.on_track.ui.loginregister.LoginRegisterViewModelFactory
 import com.android.on_track.ui.loginregister.MainActivity
@@ -32,6 +34,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class HomeFragment : Fragment() {
@@ -85,17 +88,20 @@ class HomeFragment : Fragment() {
                 requireActivity().finish()
             }
         }
+
+//        startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+        getUsageStats(view)
     }
 
-    override fun onStart() {
-        super.onStart()
-
-//        if (getGrantStatus()) {
-            getUsageStats()
-//        } else {
-//            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
-//        }
-    }
+//    override fun onStart() {
+//        super.onStart()
+//
+////        if (getGrantStatus()) {
+//            getUsageStats()
+////        } else {
+////            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+////        }
+//    }
 
     private fun getGrantStatus(): Boolean {
         val appOps = getApplicationContext<Context>().getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
@@ -110,10 +116,10 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun getUsageStats() {
+    private fun getUsageStats(view: View) {
         val calendar = Calendar.getInstance()
         val endTime = calendar.timeInMillis
-        calendar.add(Calendar.MONTH, -1)
+        calendar.add(Calendar.HOUR_OF_DAY, -1)
         val startTime = calendar.timeInMillis
 
         val dateFormat = SimpleDateFormat("M-d-yyyy HH:mm:ss");
@@ -123,23 +129,29 @@ class HomeFragment : Fragment() {
         val usageStatsManager = context!!.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
         val queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, endTime)
 
+        val appNameList = StringBuilder()
+        val list = mutableListOf<AppInfo>()
 
-        for (us in queryUsageStats) {
-            val appTime = us.totalTimeInForeground
+        for (stat in queryUsageStats) {
+            val appTime = stat.totalTimeInForeground
             val seconds = (appTime/1000)%60
             val minutes = (appTime/(1000*60))%60
             val hours = (appTime/(1000*60*60))
 
             if(!(hours == 0L && minutes == 0L && seconds == 0L)){
-                var shortenedAppName = us.packageName
+                val nameSep = stat.packageName.split('.')
+                val shortenedAppName = nameSep.last()
 
-//                if(shortenedAppName.contains("com.google.android."))
-//                    shortenedAppName = shortenedAppName.substring(19)
+                appNameList.append("Name: $shortenedAppName, hrs: $hours, mins: $minutes, secs: $seconds\n")
 
-                Log.d("DEBUG: ", "Name: $shortenedAppName, hrs: $hours, mins: $minutes, secs: $seconds")
+                list += AppInfo(stat.packageName, stat.totalTimeInForeground)
             }
-            Log.d("DEBUG: ", "Name: ${us.packageName}, hrs: $hours, mins: $minutes, secs: $seconds")
         }
+//        view.findViewById<TextView>(R.id.app_usage).text = appNameList.toString()
+
+        val myListView = view.findViewById<ListView>(R.id.list_usage)
+        val arrayAdapter = UsageListAdapter(requireActivity(), list)
+        myListView.adapter = arrayAdapter
     }
 
     override fun onDestroyView() {
