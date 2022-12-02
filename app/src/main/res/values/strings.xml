@@ -23,4 +23,6 @@
     <string name="sign_out">Sign Out</string>
     <string name="name">Name:</string>
     <string name="time_used">Time used:</string>
+    <string name="add_task_button">Add Task</string>
+    <string name="task_status">Status</string>
 </resources>
