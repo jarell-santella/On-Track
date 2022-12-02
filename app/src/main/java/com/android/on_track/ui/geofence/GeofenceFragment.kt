@@ -104,7 +104,7 @@ class GeofenceFragment : Fragment() {
             val geofenceEntry = GeofenceEntry()
 
             geofenceEntry.entry_name = "Bonsor"
-            geofenceEntry.location = LatLng(49.2238, -122.9938)
+            geofenceEntry.location = LatLng(49.2231, -122.9954)
             geofenceEntry.geofence_radius = 50.0
 
             historyViewModel.insert(geofenceEntry)
