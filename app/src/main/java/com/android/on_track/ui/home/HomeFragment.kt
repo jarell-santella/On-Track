@@ -28,11 +28,11 @@ import com.android.on_track.ui.loginregister.LoginRegisterViewModelFactory
 import com.android.on_track.ui.loginregister.MainActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.Description
-import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -157,14 +157,22 @@ class HomeFragment : Fragment() {
         }
 
         //fit the data into a bar
-        //TODO i == days
-        for (i in 0 until valueList.size) {
+        val labelsNames = ArrayList<String>();
+        for (i in valueList.size - 1 downTo 0) {
+            val calendar = Calendar.getInstance()
+            calendar.add(Calendar.DAY_OF_YEAR, -i)
+            val day = calendar.time.toString().split(' ')[0]
+
             val barEntry = BarEntry(i.toFloat(), valueList[i].toFloat())
             entries.add(barEntry)
+            labelsNames.add(day)
         }
+
         val barDataSet = BarDataSet(entries, "Title")
         val data = BarData(barDataSet)
         barChart.data = data
+        val xAxis = barChart.xAxis
+        xAxis.valueFormatter = IndexAxisValueFormatter(labelsNames)
         barChart.invalidate()
 
         barDataSet.color = Color.parseColor("#304567");
@@ -194,6 +202,17 @@ class HomeFragment : Fragment() {
         val endTime = calendar.timeInMillis
         calendar.add(Calendar.HOUR_OF_DAY, -1)
         val startTime = calendar.timeInMillis
+
+        val str = Calendar.getInstance().time.toString()
+
+        val calendar2 = Calendar.getInstance()
+        calendar2.add(Calendar.DAY_OF_YEAR, -1)
+        val str2 = calendar2.time.toString()
+
+        Log.d("DEBUG:", str)
+        Log.d("DEBUG:", str2)
+        Log.d("DEBUG:", str.split(' ')[0])
+        Log.d("DEBUG:", str2.split(' ')[0])
 
         val dateFormat = SimpleDateFormat("M-d-yyyy HH:mm:ss");
         Log.d("DEBUG: ", "_____________________________Range start: " + dateFormat.format(startTime))
