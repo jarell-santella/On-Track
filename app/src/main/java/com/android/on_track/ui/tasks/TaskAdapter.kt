@@ -1,4 +1,4 @@
-package com.android.on_track.ui.dashboard
+package com.android.on_track.ui.tasks
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -7,8 +7,8 @@ import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
-import android.os.Process
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,7 +19,6 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.android.on_track.R
 import com.android.on_track.data.FirebaseUserData
 import com.android.on_track.data.FirebaseUserDataRepository
@@ -27,6 +26,13 @@ import com.android.on_track.databinding.FragmentHomeBinding
 import com.android.on_track.ui.loginregister.LoginRegisterViewModel
 import com.android.on_track.ui.loginregister.LoginRegisterViewModelFactory
 import com.android.on_track.ui.loginregister.MainActivity
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -48,6 +54,8 @@ class HomeFragment : Fragment() {
 
     private lateinit var textView: TextView
     private lateinit var signOutButton: Button
+    private lateinit var barChart: BarChart
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -87,6 +95,8 @@ class HomeFragment : Fragment() {
                 requireActivity().finish()
             }
         }
+
+        initBarChart()
     }
 
     override fun onStart() {
@@ -97,6 +107,70 @@ class HomeFragment : Fragment() {
         } else {
             startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
         }
+
+        showBarChart()
+    }
+
+    private fun initBarChart() {
+        barChart = m_view!!.findViewById(R.id.barChart_view);
+
+        barChart.setDrawGridBackground(false)
+        barChart.setDrawBarShadow(false)
+        barChart.setDrawBorders(false)
+
+        val description = Description()
+        description.isEnabled = false
+        barChart.description = description
+
+        barChart.animateY(1000)
+        barChart.animateX(1000)
+
+        val xAxis = barChart.xAxis
+        //change the position of x-axis to the bottom
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        //set the horizontal distance of the grid line
+        xAxis.granularity = 1f
+        //hiding the x-axis line, default true if not set
+        xAxis.setDrawAxisLine(false)
+        //hiding the vertical grid lines, default true if not set
+        xAxis.setDrawGridLines(false)
+
+        //hiding the left y-axis line
+        val leftAxis = barChart.axisLeft
+        leftAxis.setDrawAxisLine(false)
+        //hiding the right y-axis line
+        val rightAxis = barChart.axisRight
+        rightAxis.setDrawAxisLine(false)
+
+        // Hide the legend
+        barChart.legend.isEnabled = false;
+    }
+
+    private fun showBarChart() {
+        val valueList = ArrayList<Double>()
+        val entries: ArrayList<BarEntry> = ArrayList()
+
+        //input data
+        //TODO get appUsage data
+        for (i in 0..6) {
+            valueList.add(i * 100.1)
+        }
+
+        //fit the data into a bar
+        //TODO i == days
+        for (i in 0 until valueList.size) {
+            val barEntry = BarEntry(i.toFloat(), valueList[i].toFloat())
+            entries.add(barEntry)
+        }
+        val barDataSet = BarDataSet(entries, "Title")
+        val data = BarData(barDataSet)
+        barChart.data = data
+        barChart.invalidate()
+
+        barDataSet.color = Color.parseColor("#304567");
+        barDataSet.formSize = 15f;
+        barDataSet.setDrawValues(false);
+        barDataSet.valueTextSize = 12f;
     }
 
     private fun getGrantStatus(): Boolean {

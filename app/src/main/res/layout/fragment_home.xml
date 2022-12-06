@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".ui.home.HomeFragment">
 
@@ -27,4 +28,10 @@
         android:id="@+id/list_usage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart_view"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"/>
+
 </LinearLayout>
