@@ -20,7 +20,24 @@
     <string name="login_button">Login</string>
     <string name="register_button">Create Account</string>
     <string name="sign_out_button">Sign Out</string>
-    <string name="sign_out">Sign Out</string>
-    <string name="add_task_button">Add Task</string>
+    <!-- For tasks fragment -->
     <string name="task_status">Status</string>
+    <string name="add_task_button">Add Task</string>
+    <!-- For task objects -->
+    <string name="name_key">name_key</string>
+    <string name="app_name_key">app_name_key</string>
+    <string name="increment_key">increment_key</string>
+    <string name="progress_key">progress_key</string>
+    <string name="goal_units_key">goal_units_key</string>
+    <string name="goal_key">goal_key</string>
+    <string name="start_date_key">start_date_key</string>
+    <string name="duration_units_key">duration_units_key</string>
+    <string name="duration_key">duration_key</string>
+    <!-- For adding tasks -->
+    <string name="task_name_hint">Task Name</string>
+    <string name="app_name_hint">App Name</string>
+    <string name="progress_goal_goal_units_helper">app for</string>
+    <string name="duration_duration_units_helper">For the next</string>
+    <string name="cancel_add_task_button">Discard</string>
+    <string name="confirm_add_task_button">Add</string>
 </resources>
