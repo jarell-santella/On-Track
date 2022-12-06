@@ -1,4 +1,4 @@
-package com.android.on_track.ui.dashboard
+package com.android.on_track.ui.tasks
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,7 +14,7 @@ import com.android.on_track.data.Task
 import com.android.on_track.databinding.FragmentDashboardBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class DashboardFragment : Fragment() {
+class TasksFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
 
@@ -24,7 +24,7 @@ class DashboardFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // TODO: This needs to be used later on when Room database for tasks is implemented
-        val dashboardViewModel = ViewModelProvider(this).get(DashboardViewModel::class.java)
+        val tasksViewModel = ViewModelProvider(this).get(TasksViewModel::class.java)
 
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
