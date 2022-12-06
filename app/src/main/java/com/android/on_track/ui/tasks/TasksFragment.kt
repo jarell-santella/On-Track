@@ -11,12 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.on_track.data.Task
-import com.android.on_track.databinding.FragmentDashboardBinding
+import com.android.on_track.databinding.FragmentTasksBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class TasksFragment : Fragment() {
 
-    private var _binding: FragmentDashboardBinding? = null
+    private var _binding: FragmentTasksBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -26,7 +26,7 @@ class TasksFragment : Fragment() {
         // TODO: This needs to be used later on when Room database for tasks is implemented
         val tasksViewModel = ViewModelProvider(this).get(TasksViewModel::class.java)
 
-        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        _binding = FragmentTasksBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val recyclerView: RecyclerView = binding.recyclerView

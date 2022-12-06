@@ -18,6 +18,7 @@ import com.android.on_track.Util
 import com.android.on_track.data.geofenceDB.*
 import com.android.on_track.databinding.FragmentGeofenceBinding
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.ArrayList
 
 class GeofenceFragment : Fragment() {
@@ -36,6 +37,7 @@ class GeofenceFragment : Fragment() {
     private lateinit var addButton: Button
     private lateinit var deleteButton: Button
     private lateinit var deleteAllButton: Button
+    private lateinit var fabButton: FloatingActionButton
     private lateinit var myListView: ListView
 
     private lateinit var arrayList: ArrayList<GeofenceEntry>
@@ -61,6 +63,7 @@ class GeofenceFragment : Fragment() {
         addButton = view.findViewById(R.id.btn_addNew)
         deleteButton = view.findViewById(R.id.btn_deleteFirst)
         deleteAllButton = view.findViewById(R.id.btn_deleteAll)
+        fabButton = view.findViewById(R.id.add_geofence_button)
 
         arrayList = ArrayList()
         arrayAdapter = GeofenceListAdapter(requireActivity(), arrayList)
@@ -98,6 +101,15 @@ class GeofenceFragment : Fragment() {
                     historyViewModel.deletePosition(index)
                 }
             }
+        }
+
+        fabButton.setOnClickListener {
+            //TODO do stuff
+            val intent = Intent(requireActivity(), MapActivity::class.java).apply {
+                putExtra(KEY_IS_NEW, true)
+            }
+
+            result.launch(intent)
         }
 
         addButton.setOnClickListener {

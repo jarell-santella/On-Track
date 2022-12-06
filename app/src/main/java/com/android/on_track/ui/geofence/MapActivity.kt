@@ -68,13 +68,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         isNew = intent.getBooleanExtra(GeofenceFragment.KEY_IS_NEW, true)
-        name = intent.getStringExtra(GeofenceFragment.KEY_NAME).toString()
-        radius = intent.getDoubleExtra(GeofenceFragment.KEY_RADIUS, 0.0)
-        latLng = Util.stringToLatLng(intent.getStringExtra(GeofenceFragment.KEY_LAT_LNG)!!)
-
-        Toast.makeText(this, "isNew: $isNew, name: $name, radius: $radius latLng: $latLng", Toast.LENGTH_LONG).show()
 
         if(!isNew){
+            name = intent.getStringExtra(GeofenceFragment.KEY_NAME).toString()
+            radius = intent.getDoubleExtra(GeofenceFragment.KEY_RADIUS, 0.0)
+            latLng = Util.stringToLatLng(intent.getStringExtra(GeofenceFragment.KEY_LAT_LNG)!!)
+
+            Toast.makeText(this, "isNew: $isNew, name: $name, radius: $radius latLng: $latLng", Toast.LENGTH_LONG).show()
+
             findViewById<TextView>(R.id.location_title).text = name
 
             geofenceList.add(Geofence.Builder()
