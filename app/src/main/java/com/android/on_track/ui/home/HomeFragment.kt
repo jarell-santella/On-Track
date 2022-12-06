@@ -37,6 +37,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
+import java.time.Duration
+import java.time.ZonedDateTime
 import java.util.*
 
 
@@ -53,6 +55,7 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel: LoginRegisterViewModel
 
     private lateinit var textView: TextView
+    private lateinit var useTime: TextView
     private lateinit var signOutButton: Button
     private lateinit var barChart: BarChart
 
@@ -67,6 +70,7 @@ class HomeFragment : Fragment() {
 
         m_view = view
         textView = view.findViewById(R.id.text_home)
+        useTime = view.findViewById(R.id.daily_use_time)
         signOutButton = view.findViewById(R.id.sign_out_button)
 
         val auth = Firebase.auth
@@ -81,13 +85,13 @@ class HomeFragment : Fragment() {
             if (user != null) {
                 if (user.isAnonymous == true) {
                     // they are using guest account
-                    textView.text = "Anonymous"
+                    textView.text = "Account: Anonymous"
                 } else if (user.accountType == "Parent") {
                     // they are using parent account
-                    textView.text = "Parent"
+                    textView.text = "Account: Parent"
                 } else if (user.accountType == "Child") {
                     // they are using child account
-                    textView.text = "Child"
+                    textView.text = "Account: Child"
                 }
             } else {
                 val intent = Intent(requireActivity(), MainActivity::class.java)
@@ -103,12 +107,11 @@ class HomeFragment : Fragment() {
         super.onStart()
 
         if (getGrantStatus()) {
-            getUsageStats(m_view!!)
+            getUsageStats()
+            showBarChart()
         } else {
             startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
         }
-
-        showBarChart()
     }
 
     private fun initBarChart() {
@@ -151,9 +154,11 @@ class HomeFragment : Fragment() {
         val entries: ArrayList<BarEntry> = ArrayList()
 
         //input data
-        //TODO get appUsage data
-        for (i in 0..6) {
-            valueList.add(i * 100.1)
+        for (i in 6.downTo(0)) {
+            val calendar = Calendar.getInstance()
+            calendar.add(Calendar.DAY_OF_YEAR, -i)
+            val d = getTotalTimeForDay (calendar)
+            valueList.add(d.toMinutes().toDouble() / 60)
         }
 
         //fit the data into a bar
@@ -197,29 +202,43 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun getUsageStats(view: View) {
+    private fun getTotalTimeForDay(calendar: Calendar): Duration {
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        val startTime = calendar.timeInMillis
+
+        calendar.set(Calendar.HOUR_OF_DAY, 23)
+        calendar.set(Calendar.MINUTE, 59)
+        calendar.set(Calendar.SECOND, 59)
+        calendar.set(Calendar.MILLISECOND, 999)
+        val endTime = calendar.timeInMillis
+
+        val usageStatsManager =
+            context!!.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        val stats = usageStatsManager.queryAndAggregateUsageStats(startTime, endTime)
+
+        return Duration.ofMillis(stats.values.sumOf { it.totalTimeInForeground })
+    }
+
+    private fun getUsageStats() {
         val calendar = Calendar.getInstance()
         val endTime = calendar.timeInMillis
         calendar.add(Calendar.HOUR_OF_DAY, -1)
         val startTime = calendar.timeInMillis
 
-        val str = Calendar.getInstance().time.toString()
-
-        val calendar2 = Calendar.getInstance()
-        calendar2.add(Calendar.DAY_OF_YEAR, -1)
-        val str2 = calendar2.time.toString()
-
-        Log.d("DEBUG:", str)
-        Log.d("DEBUG:", str2)
-        Log.d("DEBUG:", str.split(' ')[0])
-        Log.d("DEBUG:", str2.split(' ')[0])
-
         val dateFormat = SimpleDateFormat("M-d-yyyy HH:mm:ss");
         Log.d("DEBUG: ", "_____________________________Range start: " + dateFormat.format(startTime))
         Log.d("DEBUG: ", "_____________________________Range end: " + dateFormat.format(endTime))
 
+
         val usageStatsManager = context!!.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
         val queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, endTime)
+        val total = getTotalTimeForDay(Calendar.getInstance())
+
+        useTime.text = "App usage time for today: ${String.format("%.3f", total.toMinutes().toDouble() / 60).toDouble()} hrs"
+        Log.d("DEBUG: ", "YOU SPENT ${total.toMinutes()} mins.")
 
         val appNameList = StringBuilder()
         val list = mutableListOf<AppInfo>()
@@ -240,7 +259,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        val myListView = view.findViewById<ListView>(R.id.list_usage)
+        val myListView = view!!.findViewById<ListView>(R.id.list_usage)
         val arrayAdapter = UsageListAdapter(requireActivity(), list)
         myListView.adapter = arrayAdapter
     }
