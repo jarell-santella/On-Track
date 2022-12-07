@@ -1,4 +1,4 @@
-package com.android.on_track.ui.dashboard
+package com.android.on_track.ui.tasks
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -20,9 +20,4 @@ class DashboardViewModel(private val repository: TaskRepository) : ViewModel() {
     fun delete(id: Int) {
         repository.delete(id)
     }
-
-//    private val _text = MutableLiveData<String>().apply {
-//        value = "This is dashboard Fragment"
-//    }
-//    val text: LiveData<String> = _text
 }

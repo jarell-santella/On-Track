@@ -103,7 +103,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         if(!isNew){
-            mMap.addMarker(MarkerOptions().position(latLng).title("Geofence location"))
+//            mMap.addMarker(MarkerOptions().position(latLng).title("Geofence location"))
 
             val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17f)
             mMap.animateCamera(cameraUpdate) // centers and zooms into location

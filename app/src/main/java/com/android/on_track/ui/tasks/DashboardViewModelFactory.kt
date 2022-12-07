@@ -3,6 +3,7 @@ package com.android.on_track.ui.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.android.on_track.data.tasks.TaskRepository
+import com.android.on_track.ui.tasks.DashboardViewModel
 
 class DashboardViewModelFactory(private val repository: TaskRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

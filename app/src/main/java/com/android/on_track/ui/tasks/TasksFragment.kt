@@ -1,4 +1,4 @@
-package com.android.on_track.ui.dashboard
+package com.android.on_track.ui.tasks
 
 import android.app.Activity
 import android.app.usage.UsageStatsManager
@@ -21,6 +21,8 @@ import com.android.on_track.data.tasks.Task
 import com.android.on_track.data.tasks.TaskDatabase
 import com.android.on_track.data.tasks.TaskRepository
 import com.android.on_track.databinding.FragmentDashboardBinding
+import com.android.on_track.ui.dashboard.AddTaskActivity
+import com.android.on_track.ui.dashboard.DashboardViewModelFactory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.SimpleDateFormat
 import java.util.*
