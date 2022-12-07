@@ -51,13 +51,14 @@ tools:context=".ui.geofence.MapActivity">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_new_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@color/white"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/buttons">
 
         <TextView
             android:id="@+id/text_location_name"
@@ -112,7 +113,7 @@ tools:context=".ui.geofence.MapActivity">
             android:id="@+id/geofence_slider"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/buttons"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/min_val"
             app:layout_constraintEnd_toStartOf="@id/max_val"
             android:valueFrom="50"
@@ -121,40 +122,43 @@ tools:context=".ui.geofence.MapActivity">
             android:stepSize="25"
             app:trackHeight="8dp"/>
 
-        <LinearLayout
-            android:id="@+id/buttons"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="21"
-            android:layout_marginBottom="10dp"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <Button
-                android:id="@+id/btnSave"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:layout_margin="4dp"
-                android:enabled="false"
-                android:text="@string/save"/>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/btnCancel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:layout_margin="4dp"
-                android:text="@string/cancel"
-                android:onClick="clickedCancel"/>
-        </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="21"
+        android:background="@color/white"
+        android:paddingBottom="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:layout_margin="4dp"
+            android:enabled="false"
+            android:text="@string/save"/>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:layout_margin="4dp"
+            android:text="@string/cancel"
+            android:onClick="clickedCancel"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
