@@ -2,7 +2,9 @@ package com.android.on_track.ui.loginregister
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Patterns
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.android.on_track.R
@@ -11,6 +13,7 @@ import com.android.on_track.data.FirebaseUserDataRepository
 import com.android.on_track.ui.navigation.NavigationActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -62,12 +65,33 @@ class LoginFragment : Fragment() {
         val loginButton = view.findViewById<MaterialButton>(R.id.login_button)
 
         loginButton.setOnClickListener {
+            var success = true
+
             val email = emailInput.text.toString()
             val password = passwordInput.text.toString()
 
-            // TODO: No exception handling if registration fails
-            if (email.isNotBlank() && password.isNotBlank()) {
-                viewModel.login(email, password)
+            if (email.isBlank()) {
+                success = false
+                emailInput.error = "Please enter an email address"
+            } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                success = false
+                emailInput.error = "Please enter a valid email address"
+            }
+
+            if (password.isBlank()) {
+                success = false
+                passwordInput.error = "Please enter a password"
+            }
+
+            if (success) {
+                try {
+                    viewModel.login(email, password)
+                } catch (_: FirebaseAuthInvalidUserException) {
+                    emailInput.error = "Email or password might be wrong"
+                    passwordInput.error = "Email or password might be wrong"
+                } catch (_: Exception) {
+                    Toast.makeText(requireContext(), "Cannot sign in", Toast.LENGTH_SHORT)
+                }
             }
         }
 

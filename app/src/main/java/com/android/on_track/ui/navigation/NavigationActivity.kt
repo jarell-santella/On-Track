@@ -1,26 +1,17 @@
 package com.android.on_track.ui.navigation
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.android.on_track.R
-import com.android.on_track.data.FirebaseUserData
-import com.android.on_track.data.FirebaseUserDataRepository
 import com.android.on_track.databinding.ActivityNavigationBinding
 import com.android.on_track.ui.loginregister.LoginRegisterViewModel
-import com.android.on_track.ui.loginregister.LoginRegisterViewModelFactory
-import com.android.on_track.ui.loginregister.MainActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 class NavigationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityNavigationBinding

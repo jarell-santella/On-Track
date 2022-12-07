@@ -2,8 +2,10 @@ package com.android.on_track.ui.loginregister
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Patterns
 import android.view.*
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.android.on_track.R
@@ -13,6 +15,8 @@ import com.android.on_track.ui.navigation.NavigationActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -71,15 +75,58 @@ class RegisterFragment : Fragment() {
         }
 
         registerButton.setOnClickListener {
+            var success = true
+
             val firstName = firstNameInput.text.toString()
             val lastName = lastNameInput.text.toString()
             val email = emailInput.text.toString()
             val password = passwordInput.text.toString()
             val accountType = accountTypeDropdown.text.toString()
 
-            // TODO: No exception handling if registration fails
-            if (firstName.isNotBlank() && lastName.isNotBlank() && email.isNotBlank() && password.isNotBlank()) {
-                viewModel.register(email, password, firstName, lastName, accountType)
+            if (firstName.isBlank()) {
+                success = false
+                firstNameInput.error = "Please enter a first name"
+            }
+
+            if (lastName.isBlank()) {
+                success = false
+                lastNameInput.error = "Please enter a last name"
+            }
+
+            if (email.isBlank()) {
+                success = false
+                emailInput.error = "Please enter an email address"
+            } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                success = false
+                emailInput.error = "Please enter a valid email address"
+            }
+
+            if (password.isBlank()) {
+                success = false
+                passwordInput.error = "Please enter a password"
+            } else if (password.length < 6) {
+                success = false
+                passwordInput.error = "Password is weak"
+            }
+
+            if (accountType.isBlank()) {
+                success = false
+                accountTypeDropdown.error = "Please select an account type"
+            } else if (accountType != "Parent" && accountType != "Child") {
+                success = false
+                accountTypeDropdown.error = "Please select a valid account type"
+            }
+
+            if (success) {
+                try {
+                    viewModel.register(email, password, firstName, lastName, accountType)
+                } catch (_: FirebaseAuthUserCollisionException) {
+                    emailInput.error = "Email already in use"
+                } catch (_: FirebaseAuthWeakPasswordException) {
+                    passwordInput.error = "Password is weak"
+                } catch (_: Exception) {
+                    Toast.makeText(requireContext(), "Cannot register", Toast.LENGTH_SHORT)
+                }
             }
         }
 
