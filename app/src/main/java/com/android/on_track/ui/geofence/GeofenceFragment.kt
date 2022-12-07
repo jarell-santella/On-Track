@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ListView
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -47,7 +48,7 @@ class GeofenceFragment : Fragment() {
     private lateinit var databaseDao: GeofenceDatabaseDao
     private lateinit var repository: GeofenceRepository
     private lateinit var viewModelFactory: GeofenceViewModelFactory
-    private lateinit var historyViewModel: GeofenceViewModel
+    private lateinit var geofenceViewModel: GeofenceViewModel
 
     private lateinit var result: ActivityResultLauncher<Intent>
 
@@ -73,9 +74,9 @@ class GeofenceFragment : Fragment() {
         databaseDao = database.geofenceDatabaseDao
         repository = GeofenceRepository(databaseDao)
         viewModelFactory = GeofenceViewModelFactory(repository)
-        historyViewModel = ViewModelProvider(requireActivity(), viewModelFactory)[GeofenceViewModel::class.java]
+        geofenceViewModel = ViewModelProvider(requireActivity(), viewModelFactory)[GeofenceViewModel::class.java]
 
-        historyViewModel.allGeofenceEntriesLiveData.observe(requireActivity()) {
+        geofenceViewModel.allGeofenceEntriesLiveData.observe(requireActivity()) {
             arrayAdapter.replace(it)
             arrayAdapter.notifyDataSetChanged()
         }
@@ -98,13 +99,25 @@ class GeofenceFragment : Fragment() {
             if(result.resultCode == Activity.RESULT_OK ) {
                 val index = result.data?.getIntExtra(KEY_LIST_INDEX, -1) as Int
                 if (index > -1) {
-                    historyViewModel.deletePosition(index)
+                    geofenceViewModel.deletePosition(index)
                 }
+            }
+            else if(result.resultCode == 1337 ) {
+                val name = result.data?.getStringExtra(KEY_NAME)
+                val latLngStr = result.data?.getStringExtra(KEY_LAT_LNG)
+                val latLng = Util.stringToLatLng(latLngStr!!)
+                val radius = result.data?.getDoubleExtra(KEY_RADIUS, 50.0)
+
+                val geofenceEntry = GeofenceEntry()
+                geofenceEntry.entry_name = if (name == "") "(No name)" else name!!
+                geofenceEntry.geofence_radius = radius!!
+                geofenceEntry.location = latLng
+
+                geofenceViewModel.insert(geofenceEntry)
             }
         }
 
         fabButton.setOnClickListener {
-            //TODO do stuff
             val intent = Intent(requireActivity(), MapActivity::class.java).apply {
                 putExtra(KEY_IS_NEW, true)
             }
@@ -119,15 +132,15 @@ class GeofenceFragment : Fragment() {
             geofenceEntry.location = LatLng(49.2231, -122.9954)
             geofenceEntry.geofence_radius = 50.0
 
-            historyViewModel.insert(geofenceEntry)
+            geofenceViewModel.insert(geofenceEntry)
         }
 
         deleteButton.setOnClickListener {
-            historyViewModel.deleteFirst()
+            geofenceViewModel.deleteFirst()
         }
 
         deleteAllButton.setOnClickListener {
-            historyViewModel.deleteAll()
+            geofenceViewModel.deleteAll()
         }
     }
 

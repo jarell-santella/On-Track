@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -22,22 +23,26 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.slider.Slider
 
-class MapActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapBinding
 
     private lateinit var slider: Slider
 
     private val gadgetQ = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
+    private lateinit var saveButton: Button
 
     private var isNew = true
-    private var radius = 0.0
+    private var radius = 50.0
     private lateinit var name: String
     private lateinit var latLng: LatLng
+    private var newLatLng: LatLng? = null
+    private var circ : Circle? = null
 
     private lateinit var geoClient: GeofencingClient
 //    private val REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE = 3
@@ -57,7 +62,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         binding = ActivityMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        slider = findViewById<Slider>(R.id.geofence_slider)
+        saveButton = findViewById(R.id.btnSave)
 
         createChannel(this)
         geoClient = LocationServices.getGeofencingClient(this)
@@ -65,12 +70,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager.findFragmentById(R.id.geomap) as SupportMapFragment
         mapFragment.getMapAsync(this)
-
-        slider.addOnChangeListener(Slider.OnChangeListener { slider, value, _ ->
-            //Use the value
-            Log.d("DEBUG: ", value.toString())
-            //TODO change radius if latlng is not null
-        })
 
         isNew = intent.getBooleanExtra(GeofenceFragment.KEY_IS_NEW, true)
 
@@ -95,7 +94,48 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         else{
             findViewById<Button>(R.id.btn_delete).visibility = View.GONE
+
+            slider = findViewById<Slider>(R.id.geofence_slider)
+            slider.addOnChangeListener(Slider.OnChangeListener { _, value, _ ->
+                radius = value.toDouble()
+
+                //TODO only do this is LatLng is not null
+                if(newLatLng != null) {
+                    val cameraUpdate = CameraUpdateFactory.newLatLngZoom(newLatLng!!, 17f)
+                    mMap.animateCamera(cameraUpdate) // centers and zooms into location
+
+                    if (circ != null)
+                        circ!!.remove()
+
+                    circ = mMap.addCircle(
+                        CircleOptions().center(newLatLng!!)
+                            .strokeColor(Color.BLUE)
+                            .fillColor(0x330000FF)
+                            .strokeWidth(6.0f)
+                            .radius(value.toDouble())
+                    )
+                }
+            })
         }
+    }
+
+    override fun onMapLongClick(latLng: LatLng) {
+        newLatLng = latLng
+
+        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(newLatLng!!, 17f)
+        mMap.animateCamera(cameraUpdate) // centers and zooms into location
+
+        if(circ != null)
+            circ!!.remove()
+
+        circ = mMap.addCircle(CircleOptions().center(newLatLng!!)
+            .strokeColor(Color.BLUE)
+            .fillColor(0x330000FF)
+            .strokeWidth(6.0f)
+            .radius(radius))
+
+        if(!saveButton.isEnabled)
+            saveButton.isEnabled = true
     }
 
     override fun onStart() {
@@ -113,6 +153,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
 
         if(!isNew){
 //            mMap.addMarker(MarkerOptions().position(latLng).title("Geofence location"))
@@ -120,13 +161,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17f)
             mMap.animateCamera(cameraUpdate) // centers and zooms into location
 
-            mMap.addCircle(CircleOptions().center(latLng)
+            circ = mMap.addCircle(CircleOptions().center(latLng)
                 .strokeColor(Color.BLUE)
                 .fillColor(0x330000FF)
                 .strokeWidth(6.0f)
                 .radius(radius)
             )
 //            startLocation()
+        }
+        else{
+            mMap.setOnMapLongClickListener(this)
+            Toast.makeText(this, "Do a long click to place geofence", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -291,6 +336,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val returnIntent = Intent()
         returnIntent.putExtra(GeofenceFragment.KEY_LIST_INDEX, intent.getIntExtra(GeofenceFragment.KEY_LIST_INDEX, -1))
         setResult(RESULT_OK, returnIntent)
+        finish()
+    }
+
+    fun clickedSave(view: View) {
+        val locNameStr = findViewById<EditText>(R.id.enter_name_field).text.toString()
+
+        val returnIntent = Intent()
+        returnIntent.putExtra(GeofenceFragment.KEY_NAME, locNameStr)
+        returnIntent.putExtra(GeofenceFragment.KEY_LAT_LNG, Util.latLngToString(newLatLng!!))
+        returnIntent.putExtra(GeofenceFragment.KEY_RADIUS, radius)
+
+        setResult(1337, returnIntent)
         finish()
     }
 }
