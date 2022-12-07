@@ -8,4 +8,17 @@
         <item>Parent</item>
         <item>Child</item>
     </string-array>
+    <string-array name="increment_values">
+        <item>Limit usage of</item>
+        <item>Use</item>
+    </string-array>
+    <string-array name="goal_units_values">
+        <item>Hours</item>
+        <item>Minutes</item>
+    </string-array>
+    <string-array name="duration_units_values">
+        <item>Hours</item>
+        <item>Days</item>
+        <item>Weeks</item>
+    </string-array>
 </resources>
