@@ -22,13 +22,12 @@ import com.android.on_track.data.tasks.Task
 import com.android.on_track.data.tasks.TaskDatabase
 import com.android.on_track.data.tasks.TaskRepository
 import com.android.on_track.databinding.FragmentTasksBinding
-import com.android.on_track.ui.dashboard.DashboardViewModelFactory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DashboardFragment : Fragment() {
-    private lateinit var viewModel: DashboardViewModel
+class TasksFragment : Fragment() {
+    private lateinit var viewModel: TasksViewModel
     private lateinit var activityResultLauncher : ActivityResultLauncher<Intent>
 
     private var _binding: FragmentTasksBinding? = null
@@ -103,8 +102,8 @@ class DashboardFragment : Fragment() {
         val database = TaskDatabase.getInstance(requireActivity())
         val dao = database.dao
         val repository = TaskRepository(dao)
-        val viewModelFactory = DashboardViewModelFactory(repository)
-        viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[DashboardViewModel::class.java]
+        val viewModelFactory = TasksViewModelFactory(repository)
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[TasksViewModel::class.java]
 
         activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {

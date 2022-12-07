@@ -1,6 +1,14 @@
 package com.android.on_track.data
 
+import android.content.Context
+import android.view.View
+import android.widget.Toast
+import com.android.on_track.R
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.CoroutineScope
@@ -11,7 +19,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class FirebaseUserData(private val auth: FirebaseAuth, private val db: FirebaseFirestore) {
+class FirebaseUserData(private val auth: FirebaseAuth, private val db: FirebaseFirestore, private val view: View? = null, private val context: Context? = null) {
     fun getCurrentUser(): Flow<User?> = callbackFlow {
         val authStateListener = FirebaseAuth.AuthStateListener { auth ->
             auth.currentUser.let {
@@ -36,27 +44,58 @@ class FirebaseUserData(private val auth: FirebaseAuth, private val db: FirebaseF
         awaitClose { auth.removeAuthStateListener(authStateListener) }
     }
 
-    suspend fun login(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password).await()
+    fun login(email: String, password: String) {
+        try {
+            println("debug: test")
+            auth.signInWithEmailAndPassword(email, password)
+        } catch (e: FirebaseAuthInvalidUserException) {
+            println("debug: test2")
+            if (view != null) {
+                println("debug: firebaseauthinvalduser")
+                val emailInput = view.findViewById<TextInputEditText>(R.id.email_input)
+                val passwordInput = view.findViewById<TextInputEditText>(R.id.password_input)
+
+                emailInput.error = "Email or password might be wrong"
+                passwordInput.error = "Email or password might be wrong"
+            }
+        } catch (e: Exception) {
+            println("debug: test3")
+            if (context != null) {
+                Toast.makeText(context, "Cannot sign in", Toast.LENGTH_SHORT)
+            }
+        }
     }
 
     suspend fun guestLogin() {
         auth.signInAnonymously().await()
     }
 
-    suspend fun register(email: String, password: String, firstName: String, lastName: String, accountType: String) {
-        auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener {
-            CoroutineScope(IO).launch {
-                val currentUser = auth.currentUser
-                if (currentUser != null) {
-                    // Create new document with user ID
-                    // WARNING: .await() here may cause issues
-
-                    // Add user object into this document
-                    // WARNING: .await() here may cause issues
-                    val user = User(currentUser.isAnonymous, firstName, lastName, currentUser.email, accountType)
-                    db.collection("users").document(currentUser.uid).set(user).await()
+    fun register(email: String, password: String, firstName: String, lastName: String, accountType: String) {
+        try {
+            auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener {
+                CoroutineScope(IO).launch {
+                    val currentUser = auth.currentUser
+                    if (currentUser != null) {
+                        // Create new document with user ID
+                        // Add user object into this document
+                        val user = User(currentUser.isAnonymous, firstName, lastName, currentUser.email, accountType)
+                        db.collection("users").document(currentUser.uid).set(user).await()
+                    }
                 }
+            }
+        } catch (e: FirebaseAuthUserCollisionException) {
+            if (view != null) {
+                val emailInput = view.findViewById<TextInputEditText>(R.id.email_input)
+                emailInput.error = "Email already in use"
+            }
+        } catch (e: FirebaseAuthWeakPasswordException) {
+            if (view != null) {
+                val passwordInput = view.findViewById<TextInputEditText>(R.id.password_input)
+                passwordInput.error = "Password is weak"
+            }
+        } catch (e: Exception) {
+            if (context != null) {
+                Toast.makeText(context, "Cannot register", Toast.LENGTH_SHORT)
             }
         }
     }
@@ -64,8 +103,6 @@ class FirebaseUserData(private val auth: FirebaseAuth, private val db: FirebaseF
     suspend fun signOut() {
         if (auth.currentUser!!.isAnonymous) {
             // Delete anonymous accounts from Firebase on sign out
-            // CAUTION: All information on these anonymous accounts will be lost if signed out from
-            // WARNING: .await() here may cause issues
             auth.currentUser!!.delete().await()
         }
         auth.signOut()

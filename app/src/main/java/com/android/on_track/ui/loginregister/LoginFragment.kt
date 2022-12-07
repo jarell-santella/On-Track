@@ -23,18 +23,17 @@ class LoginFragment : Fragment() {
 
     private lateinit var navigationIntent: Intent
 
-    // TODO: It may be better to put everything into onCreateView to get the most recent database instance
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_login, container, false)
 
         val auth = Firebase.auth
         val db = Firebase.firestore
-        val userData = FirebaseUserData(auth, db)
+        val userData = FirebaseUserData(auth, db, view, requireContext())
         val userDataRepository = FirebaseUserDataRepository(userData)
         val viewModelFactory = LoginRegisterViewModelFactory(userDataRepository)
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[LoginRegisterViewModel::class.java]
 
-        viewModel.currentUser.observe(this) { user ->
+        viewModel.currentUser.observe(viewLifecycleOwner) { user ->
             if (user != null) {
                 navigationIntent = Intent(context, NavigationActivity::class.java)
                 if (user.isAnonymous == true) {
@@ -53,10 +52,6 @@ class LoginFragment : Fragment() {
                 requireActivity().finish()
             }
         }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_login, container, false)
 
         setHasOptionsMenu(true)
 
@@ -84,14 +79,7 @@ class LoginFragment : Fragment() {
             }
 
             if (success) {
-                try {
-                    viewModel.login(email, password)
-                } catch (_: FirebaseAuthInvalidUserException) {
-                    emailInput.error = "Email or password might be wrong"
-                    passwordInput.error = "Email or password might be wrong"
-                } catch (_: Exception) {
-                    Toast.makeText(requireContext(), "Cannot sign in", Toast.LENGTH_SHORT)
-                }
+                viewModel.login(email, password)
             }
         }
 

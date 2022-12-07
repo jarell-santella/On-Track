@@ -6,7 +6,7 @@ import androidx.lifecycle.asLiveData
 import com.android.on_track.data.tasks.Task
 import com.android.on_track.data.tasks.TaskRepository
 
-class DashboardViewModel(private val repository: TaskRepository) : ViewModel() {
+class TasksViewModel(private val repository: TaskRepository) : ViewModel() {
     val tasks: LiveData<List<Task>> = repository.tasks.asLiveData()
 
     fun insert(task: Task) {

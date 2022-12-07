@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">On Track</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Tasks</string>
+    <string name="title_tasks">Tasks</string>
     <string name="title_geofence">Geofence</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="save">Save</string>
