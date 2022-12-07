@@ -1,4 +1,4 @@
-package com.android.on_track.ui.dashboard
+package com.android.on_track.ui.tasks
 
 import android.app.Activity
 import android.content.Intent
@@ -19,10 +19,12 @@ class AddTaskActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_task)
 
         val applications = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
-        val appNames = ArrayList<String>()
 
+        val applicationNames = HashMap<String, String>(applications.size)
         for (application in applications) {
-            appNames.add(application.packageName)
+            val applicationInfo = packageManager.getApplicationInfo(application.packageName, PackageManager.GET_META_DATA)
+            val strippedAppName = packageManager.getApplicationLabel(applicationInfo)
+            applicationNames[strippedAppName.toString()] = application.packageName
         }
 
         val taskNameInput = findViewById<TextInputEditText>(R.id.task_name_input)
@@ -37,7 +39,7 @@ class AddTaskActivity : AppCompatActivity() {
         val cancelAddTaskButton = findViewById<FloatingActionButton>(R.id.cancel_add_task_button)
         val confirmAddTaskButton = findViewById<FloatingActionButton>(R.id.confirm_add_task_button)
 
-        ArrayAdapter(this, android.R.layout.simple_spinner_item, appNames).also { adapter ->
+        ArrayAdapter(this, android.R.layout.simple_spinner_item, applicationNames.keys.toList()).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             appNameDropdown.setAdapter(adapter)
         }
@@ -78,9 +80,9 @@ class AddTaskActivity : AppCompatActivity() {
             }
 
             val goalUnitsValue = if (goalUnitsInput.value == 0) {
-                "Minutes"
-            } else { // if goalUnitsInput.value == 1
                 "Hours"
+            } else { // if goalUnitsInput.value == 1
+                "Minutes"
             }
 
             val durationUnitsValue = when (durationUnitsInput.value) {

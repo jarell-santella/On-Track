@@ -17,7 +17,7 @@ class TaskAdapter(private val taskList: List<Task>) : RecyclerView.Adapter<TaskV
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val name = taskList[position].name
-        val target = taskList[position].appName
+        val appName = taskList[position].appName
         val increment = taskList[position].increment
         val progress = taskList[position].progress
         val goalUnits = taskList[position].goalUnits
@@ -33,6 +33,17 @@ class TaskAdapter(private val taskList: List<Task>) : RecyclerView.Adapter<TaskV
         val days = hours / 24
         val weeks = days / 7
 
+        val calendar = Calendar.getInstance()
+        calendar.time = startDate
+
+        when (durationUnits) {
+            "Hours" -> calendar.add(Calendar.HOUR_OF_DAY, duration)
+            "Days" -> calendar.add(Calendar.DAY_OF_MONTH, duration)
+            "Weeks" -> calendar.add(Calendar.WEEK_OF_YEAR, duration)
+        }
+
+        val endDate = calendar.time
+
         val timeRemaining = when (durationUnits) {
             "Hours" -> duration - hours
             "Days" -> duration - days
@@ -40,31 +51,31 @@ class TaskAdapter(private val taskList: List<Task>) : RecyclerView.Adapter<TaskV
         }
         holder.name.text = name
         holder.description.text = if (increment == "Positive") {
-            String.format("Use %s for %d %s for %d %s", target, goal, goalUnits.lowercase(), duration, durationUnits.lowercase())
+            String.format("Use %s for %d %s for %d %s (ends %s)", appName, goal, goalUnits.lowercase(), duration, durationUnits.lowercase(), SimpleDateFormat("dd/MM/yyyy HH:mm").format(endDate))
         } else { // if increment == "Negative"
-            String.format("Limit usage of %s for %d %s for %d %s", target, goal, goalUnits.lowercase(), duration, durationUnits.lowercase())
+            String.format("Limit usage of %s for %d %s for %d %s (ends %s)", appName, goal, goalUnits.lowercase(), duration, durationUnits.lowercase(), SimpleDateFormat("dd/MM/yyyy HH:mm").format(endDate))
         }
         holder.progress.text = String.format("%d/%d %s", progress, goal, goalUnits.lowercase())
-        holder.startDate.text = String.format("Started %s", SimpleDateFormat("dd/MM/yyyy hh:mm").format(startDate))
+        holder.startDate.text = String.format("Started %s", SimpleDateFormat("dd/MM/yyyy HH:mm").format(startDate))
 
         if (progress >= goal) {
             if (increment == "Positive") {
                 holder.timeRemaining.text = String.format("Success")
-                holder.card.setBackgroundColor(ContextCompat.getColor(holder.card.context, R.color.pastel_green))
+                holder.card.setCardBackgroundColor(ContextCompat.getColor(holder.card.context, R.color.pastel_green))
             } else if (increment == "Negative") {
                 holder.timeRemaining.text = String.format("Failure")
-                holder.card.setBackgroundColor(ContextCompat.getColor(holder.card.context, R.color.pastel_red))
+                holder.card.setCardBackgroundColor(ContextCompat.getColor(holder.card.context, R.color.pastel_red))
             }
-        } else if (timeRemaining >= 0) { // if progress < goal
+        } else if (timeRemaining > 0) { // if progress < goal
             holder.timeRemaining.text = String.format("%d %s remaining", timeRemaining, durationUnits.lowercase())
-            holder.card.setBackgroundColor(ContextCompat.getColor(holder.card.context, R.color.pastel_yellow))
-        } else { // if progress < goal and timeRemaining < 0
+            holder.card.setCardBackgroundColor(ContextCompat.getColor(holder.card.context, R.color.pastel_yellow))
+        } else { // if progress < goal and timeRemaining =< 0
             if (increment == "Positive") {
                 holder.timeRemaining.text = String.format("Failure")
-                holder.card.setBackgroundColor(ContextCompat.getColor(holder.card.context, R.color.pastel_red))
+                holder.card.setCardBackgroundColor(ContextCompat.getColor(holder.card.context, R.color.pastel_red))
             } else if (increment == "Negative") {
                 holder.timeRemaining.text = String.format("Success")
-                holder.card.setBackgroundColor(ContextCompat.getColor(holder.card.context, R.color.pastel_green))
+                holder.card.setCardBackgroundColor(ContextCompat.getColor(holder.card.context, R.color.pastel_green))
             }
         }
     }
