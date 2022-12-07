@@ -67,14 +67,15 @@ class GeofenceFragment : Fragment() {
         fabButton = view.findViewById(R.id.add_geofence_button)
 
         arrayList = ArrayList()
-        arrayAdapter = GeofenceListAdapter(requireActivity(), arrayList)
-        myListView.adapter = arrayAdapter
 
         database = GeofenceDatabase.getInstance(requireActivity())
         databaseDao = database.geofenceDatabaseDao
         repository = GeofenceRepository(databaseDao)
         viewModelFactory = GeofenceViewModelFactory(repository)
         geofenceViewModel = ViewModelProvider(requireActivity(), viewModelFactory)[GeofenceViewModel::class.java]
+
+        arrayAdapter = GeofenceListAdapter(requireActivity(), arrayList, geofenceViewModel)
+        myListView.adapter = arrayAdapter
 
         geofenceViewModel.allGeofenceEntriesLiveData.observe(requireActivity()) {
             arrayAdapter.replace(it)

@@ -81,8 +81,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapLong
             radius = intent.getDoubleExtra(GeofenceFragment.KEY_RADIUS, 0.0)
             latLng = Util.stringToLatLng(intent.getStringExtra(GeofenceFragment.KEY_LAT_LNG)!!)
 
-            Toast.makeText(this, "isNew: $isNew, name: $name, radius: $radius latLng: $latLng", Toast.LENGTH_LONG).show()
-
             findViewById<TextView>(R.id.location_title).text = name
 
             geofenceList.add(Geofence.Builder()
@@ -99,7 +97,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapLong
             slider.addOnChangeListener(Slider.OnChangeListener { _, value, _ ->
                 radius = value.toDouble()
 
-                //TODO only do this is LatLng is not null
                 if(newLatLng != null) {
                     val cameraUpdate = CameraUpdateFactory.newLatLngZoom(newLatLng!!, 17f)
                     mMap.animateCamera(cameraUpdate) // centers and zooms into location
