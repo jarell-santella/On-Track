@@ -14,7 +14,7 @@ import com.android.on_track.data.Task
 import com.android.on_track.databinding.FragmentTasksBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class TasksFragment : Fragment() {
+class DashboardFragment : Fragment() {
 
     private var _binding: FragmentTasksBinding? = null
 
@@ -24,7 +24,7 @@ class TasksFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // TODO: This needs to be used later on when Room database for tasks is implemented
-        val tasksViewModel = ViewModelProvider(this).get(TasksViewModel::class.java)
+        val dashboardViewModel = ViewModelProvider(this).get(DashboardViewModel::class.java)
 
         _binding = FragmentTasksBinding.inflate(inflater, container, false)
         val root: View = binding.root
