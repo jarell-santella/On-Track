@@ -111,12 +111,17 @@
             app:passwordToggleEnabled="false"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
+            <!-- TODO: Fix user entering their own information outside of auto complete options -->
+
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/account_type_dropdown"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:hint="@string/account_type_hint"
+                android:imeOptions="flagNoExtractUi"
+                android:inputType="textCapWords"
+                android:singleLine="true"
                 android:focusable="false"/>
 
         </com.google.android.material.textfield.TextInputLayout>
