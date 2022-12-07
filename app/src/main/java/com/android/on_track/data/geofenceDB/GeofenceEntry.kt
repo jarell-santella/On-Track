@@ -17,7 +17,7 @@ data class GeofenceEntry(
     var geofence_radius: Double = 10.0,
 
     @ColumnInfo(name = "isEnabled_column")
-    var isEnabled: Boolean = false,
+    var isEnabled: Boolean = true,
 
     @ColumnInfo(name = "location_column")
     var location: LatLng? = null

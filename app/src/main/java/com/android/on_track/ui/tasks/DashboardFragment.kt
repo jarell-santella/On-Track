@@ -21,7 +21,7 @@ import com.android.on_track.R
 import com.android.on_track.data.tasks.Task
 import com.android.on_track.data.tasks.TaskDatabase
 import com.android.on_track.data.tasks.TaskRepository
-import com.android.on_track.databinding.FragmentDashboardBinding
+import com.android.on_track.databinding.FragmentTasksBinding
 import com.android.on_track.ui.dashboard.DashboardViewModelFactory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.SimpleDateFormat
@@ -31,13 +31,13 @@ class DashboardFragment : Fragment() {
     private lateinit var viewModel: DashboardViewModel
     private lateinit var activityResultLauncher : ActivityResultLauncher<Intent>
 
-    private var _binding: FragmentDashboardBinding? = null
+    private var _binding: FragmentTasksBinding? = null
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        _binding = FragmentTasksBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val recyclerView: RecyclerView = binding.recyclerView

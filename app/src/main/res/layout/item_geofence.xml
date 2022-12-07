@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal"
     android:padding="10dp">
 
@@ -15,14 +16,14 @@
         app:layout_constraintTop_toTopOf="parent"
         android:text="Filler"/>
 
-<!--    <Switch-->
-<!--        android:id="@+id/switch_enable"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:checked="false"-->
-<!--        app:layout_constraintTop_toTopOf="@id/textView_locationName"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/textView_locationName"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        tools:ignore="UseSwitchCompatOrMaterialXml"/>-->
+    <Switch
+        android:id="@+id/switch_enable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        app:layout_constraintTop_toTopOf="@id/textView_locationName"
+        app:layout_constraintBottom_toBottomOf="@id/textView_locationName"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="UseSwitchCompatOrMaterialXml"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
