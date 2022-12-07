@@ -20,8 +20,4 @@ class LoginRegisterViewModel(private val repository: FirebaseUserDataRepository)
     fun register(email: String, password: String, firstName: String, lastName: String, accountType: String) {
         repository.register(email, password, firstName, lastName, accountType)
     }
-
-    fun signOut() {
-        repository.signOut()
-    }
 }
