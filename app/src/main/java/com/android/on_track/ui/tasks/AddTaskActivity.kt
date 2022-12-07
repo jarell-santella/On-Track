@@ -94,7 +94,7 @@ class AddTaskActivity : AppCompatActivity() {
             if (taskNameInput.text.toString().isNotBlank() && appNameDropdown.text.toString().isNotBlank()) {
                 val bundle = Bundle()
                 bundle.putString(getString(R.string.name_key), taskNameInput.text.toString())
-                bundle.putString(getString(R.string.app_name_key), applicationNames[appNameDropdown.text.toString()])
+                bundle.putString(getString(R.string.app_name_key), appNameDropdown.text.toString())
                 bundle.putString(getString(R.string.increment_key), incrementValue)
                 bundle.putString(getString(R.string.goal_units_key), goalUnitsValue)
                 bundle.putInt(getString(R.string.goal_key), goalInput.value)

@@ -60,32 +60,21 @@ class DashboardFragment : Fragment() {
                 }
                 val endTime = calendar.time.time
 
-                println("debug: beginTime = " + beginTime)
-                println("debug: endTime = " + endTime)
-
                 if (endTime - Calendar.getInstance().time.time >= 0) {
-                    println("debug: timeRemaining = " + (endTime - Calendar.getInstance().time.time))
                     val usageStatsManager = context!!.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-                    val queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, beginTime, endTime)
+                    val queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_YEARLY, beginTime, endTime)
 
                     for (usageStat in queryUsageStats) {
                         if (usageStat.packageName == task.appName) {
-                            val minutes = usageStat.totalTimeInForeground.toInt() / 1000 / 60
-                            println("debug: usageStat.totalTimeInForeground = " + usageStat.totalTimeInForeground )
+                            val minutes = usageStat.totalTimeInForeground / 1000
                             val appUsage = if (task.goalUnits == "Minutes") {
                                 minutes
                             } else { // if task.goalUnits == "Hours"
                                 minutes / 60
                             }
 
-                            if (task.goalUnits == "Minutes") {
-                                println("debug: minutes = " + minutes)
-                            } else {
-                                println("debug: hours = " + (minutes / 60))
-                            }
-
-                            if (appUsage != task.progress) {
-                                viewModel.updateProgress(task.id, appUsage)
+                            if (appUsage.toInt() != task.progress) {
+                                viewModel.updateProgress(task.id, appUsage.toInt())
                             }
                         }
                     }
