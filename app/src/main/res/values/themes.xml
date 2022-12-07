@@ -20,4 +20,8 @@
     </style>
     
     <style name="Theme.OnTrack.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="DefaultNumberPickerTheme" parent="Theme.OnTrack">
+        <item name="colorControlNormal">@color/transparent</item>
+    </style>
 </resources>
