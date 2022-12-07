@@ -11,6 +11,6 @@ class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val name: MaterialTextView = itemView.findViewById(R.id.task_name)
     val description: MaterialTextView = itemView.findViewById(R.id.task_description)
     val progress: MaterialTextView = itemView.findViewById(R.id.task_progress)
-    val startDate: MaterialTextView = itemView.findViewById(R.id.task_startDate)
-    val timeRemaining: MaterialTextView = itemView.findViewById(R.id.task_timeRemaining)
+    val startDate: MaterialTextView = itemView.findViewById(R.id.task_start_date)
+    val timeRemaining: MaterialTextView = itemView.findViewById(R.id.task_time_remaining)
 }
