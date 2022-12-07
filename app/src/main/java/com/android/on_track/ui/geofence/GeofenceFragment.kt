@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ListView
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,6 +19,7 @@ import com.android.on_track.Util
 import com.android.on_track.data.geofenceDB.*
 import com.android.on_track.databinding.FragmentGeofenceBinding
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.ArrayList
 
 class GeofenceFragment : Fragment() {
@@ -36,6 +38,7 @@ class GeofenceFragment : Fragment() {
     private lateinit var addButton: Button
     private lateinit var deleteButton: Button
     private lateinit var deleteAllButton: Button
+    private lateinit var fabButton: FloatingActionButton
     private lateinit var myListView: ListView
 
     private lateinit var arrayList: ArrayList<GeofenceEntry>
@@ -45,7 +48,7 @@ class GeofenceFragment : Fragment() {
     private lateinit var databaseDao: GeofenceDatabaseDao
     private lateinit var repository: GeofenceRepository
     private lateinit var viewModelFactory: GeofenceViewModelFactory
-    private lateinit var historyViewModel: GeofenceViewModel
+    private lateinit var geofenceViewModel: GeofenceViewModel
 
     private lateinit var result: ActivityResultLauncher<Intent>
 
@@ -61,18 +64,20 @@ class GeofenceFragment : Fragment() {
         addButton = view.findViewById(R.id.btn_addNew)
         deleteButton = view.findViewById(R.id.btn_deleteFirst)
         deleteAllButton = view.findViewById(R.id.btn_deleteAll)
+        fabButton = view.findViewById(R.id.add_geofence_button)
 
         arrayList = ArrayList()
-        arrayAdapter = GeofenceListAdapter(requireActivity(), arrayList)
-        myListView.adapter = arrayAdapter
 
         database = GeofenceDatabase.getInstance(requireActivity())
         databaseDao = database.geofenceDatabaseDao
         repository = GeofenceRepository(databaseDao)
         viewModelFactory = GeofenceViewModelFactory(repository)
-        historyViewModel = ViewModelProvider(requireActivity(), viewModelFactory)[GeofenceViewModel::class.java]
+        geofenceViewModel = ViewModelProvider(requireActivity(), viewModelFactory)[GeofenceViewModel::class.java]
 
-        historyViewModel.allGeofenceEntriesLiveData.observe(requireActivity()) {
+        arrayAdapter = GeofenceListAdapter(requireActivity(), arrayList, geofenceViewModel)
+        myListView.adapter = arrayAdapter
+
+        geofenceViewModel.allGeofenceEntriesLiveData.observe(requireActivity()) {
             arrayAdapter.replace(it)
             arrayAdapter.notifyDataSetChanged()
         }
@@ -95,9 +100,30 @@ class GeofenceFragment : Fragment() {
             if(result.resultCode == Activity.RESULT_OK ) {
                 val index = result.data?.getIntExtra(KEY_LIST_INDEX, -1) as Int
                 if (index > -1) {
-                    historyViewModel.deletePosition(index)
+                    geofenceViewModel.deletePosition(index)
                 }
             }
+            else if(result.resultCode == 1337 ) {
+                val name = result.data?.getStringExtra(KEY_NAME)
+                val latLngStr = result.data?.getStringExtra(KEY_LAT_LNG)
+                val latLng = Util.stringToLatLng(latLngStr!!)
+                val radius = result.data?.getDoubleExtra(KEY_RADIUS, 50.0)
+
+                val geofenceEntry = GeofenceEntry()
+                geofenceEntry.entry_name = if (name == "") "(No name)" else name!!
+                geofenceEntry.geofence_radius = radius!!
+                geofenceEntry.location = latLng
+
+                geofenceViewModel.insert(geofenceEntry)
+            }
+        }
+
+        fabButton.setOnClickListener {
+            val intent = Intent(requireActivity(), MapActivity::class.java).apply {
+                putExtra(KEY_IS_NEW, true)
+            }
+
+            result.launch(intent)
         }
 
         addButton.setOnClickListener {
@@ -107,15 +133,15 @@ class GeofenceFragment : Fragment() {
             geofenceEntry.location = LatLng(49.2231, -122.9954)
             geofenceEntry.geofence_radius = 50.0
 
-            historyViewModel.insert(geofenceEntry)
+            geofenceViewModel.insert(geofenceEntry)
         }
 
         deleteButton.setOnClickListener {
-            historyViewModel.deleteFirst()
+            geofenceViewModel.deleteFirst()
         }
 
         deleteAllButton.setOnClickListener {
-            historyViewModel.deleteAll()
+            geofenceViewModel.deleteAll()
         }
     }
 

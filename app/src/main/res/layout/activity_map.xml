@@ -41,38 +41,127 @@ tools:context=".ui.geofence.MapActivity">
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
-<androidx.fragment.app.FragmentContainerView
-    android:id="@+id/geomap"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
-    app:layout_constraintTop_toTopOf="@id/toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
 
-<LinearLayout
-    android:id="@+id/buttons"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:weightSum="2"
-    app:layout_constraintBottom_toBottomOf="parent">
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/geomap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        app:layout_constraintTop_toTopOf="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-    <Button
-        android:id="@+id/btnSave"
-        android:layout_width="0dp"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_new_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_margin="4dp"
-        android:enabled="false"
-        android:text="@string/save"/>
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintBottom_toTopOf="@id/buttons">
 
-    <Button
-        android:id="@+id/btnCancel"
-        android:layout_width="0dp"
+        <TextView
+            android:id="@+id/text_location_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/enter_name_field"
+            app:layout_constraintBottom_toBottomOf="@id/enter_name_field"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="Location Name:"
+            android:textSize="14sp"/>
+
+        <EditText
+            android:id="@+id/enter_name_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Enter location name"
+            android:textSize="14sp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/text_radius"
+            app:layout_constraintStart_toEndOf="@id/text_location_name"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/text_radius"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/geofence_slider"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="Set Radius:"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/min_val"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/geofence_slider"
+            app:layout_constraintBottom_toBottomOf="@id/geofence_slider"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="50m"/>
+
+        <TextView
+            android:id="@+id/max_val"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/geofence_slider"
+            app:layout_constraintBottom_toBottomOf="@id/geofence_slider"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="500m"/>
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/geofence_slider"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/min_val"
+            app:layout_constraintEnd_toStartOf="@id/max_val"
+            android:valueFrom="50"
+            android:valueTo="500"
+            android:value="50"
+            android:stepSize="25"
+            app:trackHeight="8dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_margin="4dp"
-        android:text="@string/cancel"
-        android:onClick="clickedCancel"/>
-</LinearLayout>
+        android:orientation="horizontal"
+        android:weightSum="21"
+        android:background="@color/white"
+        android:paddingBottom="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:layout_margin="4dp"
+            android:enabled="false"
+            android:text="@string/save"
+            android:onClick="clickedSave"/>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:layout_margin="4dp"
+            android:text="@string/cancel"
+            android:onClick="clickedCancel"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

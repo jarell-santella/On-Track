@@ -28,7 +28,7 @@ class UsageListAdapter(private val context: Context, private var usageList: List
 
     @SuppressLint("ViewHolder", "SetTextI18n")
     override fun getView(pos: Int, convertView: View?, parent: ViewGroup?): View {
-        val view: View = View.inflate(context, R.layout.usage_item,null)
+        val view: View = View.inflate(context, R.layout.item_usage,null)
 
         val packageName = usageList[pos].app_name
         val usageTime = usageList[pos].time_used
