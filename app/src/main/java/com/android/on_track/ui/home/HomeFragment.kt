@@ -17,14 +17,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.android.on_track.R
 import com.android.on_track.data.FirebaseUserData
 import com.android.on_track.data.FirebaseUserDataRepository
 import com.android.on_track.databinding.FragmentHomeBinding
-import com.android.on_track.ui.loginregister.LoginRegisterViewModel
-import com.android.on_track.ui.loginregister.LoginRegisterViewModelFactory
 import com.android.on_track.ui.loginregister.MainActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.Description
@@ -38,7 +37,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.time.Duration
-import java.time.ZonedDateTime
 import java.util.*
 
 
@@ -51,8 +49,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private var m_view: View? = null
 
-    // TODO: Do not use LoginRegisterViewModel and LoginRegisterViewModelFactory
-    private lateinit var viewModel: LoginRegisterViewModel
+    private lateinit var viewModel: HomeViewModel
 
     private lateinit var textView: TextView
     private lateinit var useTime: TextView
@@ -77,9 +74,8 @@ class HomeFragment : Fragment() {
         val db = Firebase.firestore
         val userData = FirebaseUserData(auth, db)
         val userDataRepository = FirebaseUserDataRepository(userData)
-        // TODO: Do not use LoginRegisterViewModel and LoginRegisterViewModelFactory
-        val viewModelFactory = LoginRegisterViewModelFactory(userDataRepository)
-        viewModel = ViewModelProvider(this, viewModelFactory)[LoginRegisterViewModel::class.java]
+        val viewModelFactory = HomeViewModelFactory(userDataRepository)
+        viewModel = ViewModelProvider(this, viewModelFactory)[HomeViewModel::class.java]
 
         viewModel.currentUser.observe(viewLifecycleOwner) { user ->
             if (user != null) {
@@ -97,6 +93,14 @@ class HomeFragment : Fragment() {
                 val intent = Intent(requireActivity(), MainActivity::class.java)
                 startActivity(intent)
                 requireActivity().finish()
+            }
+        }
+
+        signOutButton.setOnClickListener {
+            try {
+                viewModel.signOut()
+            } catch (_: Exception) {
+                Toast.makeText(requireContext(), "Cannot sign out", Toast.LENGTH_SHORT)
             }
         }
 
