@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.android.on_track.R
@@ -65,6 +66,7 @@ class LoginFragment : Fragment() {
 
         loginButton.setOnClickListener {
             var success = true
+
             val email = emailInput.text.toString()
             val password = passwordInput.text.toString()
 
@@ -84,9 +86,11 @@ class LoginFragment : Fragment() {
             if (success) {
                 try {
                     viewModel.login(email, password)
-                } catch (e: FirebaseAuthInvalidUserException) {
+                } catch (_: FirebaseAuthInvalidUserException) {
                     emailInput.error = "Email or password might be wrong"
                     passwordInput.error = "Email or password might be wrong"
+                } catch (_: Exception) {
+                    Toast.makeText(requireContext(), "Cannot sign in", Toast.LENGTH_SHORT)
                 }
             }
         }
