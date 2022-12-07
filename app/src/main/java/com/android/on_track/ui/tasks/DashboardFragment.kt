@@ -61,20 +61,21 @@ class DashboardFragment : Fragment() {
                 val endTime = calendar.time.time
 
                 if (endTime - Calendar.getInstance().time.time >= 0) {
+                    // TODO: Get UsageStats on intervals smalled than an hour
                     val usageStatsManager = context!!.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
                     val queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_YEARLY, beginTime, endTime)
 
                     for (usageStat in queryUsageStats) {
                         if (usageStat.packageName == task.appName) {
-                            val minutes = usageStat.totalTimeInForeground / 1000
+                            val minutes = usageStat.totalTimeInForeground.toInt() / 1000 / 60
                             val appUsage = if (task.goalUnits == "Minutes") {
                                 minutes
                             } else { // if task.goalUnits == "Hours"
                                 minutes / 60
                             }
 
-                            if (appUsage.toInt() != task.progress) {
-                                viewModel.updateProgress(task.id, appUsage.toInt())
+                            if (appUsage != task.progress) {
+                                viewModel.updateProgress(task.id, appUsage)
                             }
                         }
                     }
